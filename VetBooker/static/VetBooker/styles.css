@@ -1,0 +1,15 @@
+.form-control {
+    width: 50vw;
+    margin: auto;
+    margin-bottom: 10px;
+}
+
+.centerText {
+    text-align: center;
+}
+
+.flex-center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}

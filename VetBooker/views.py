@@ -44,7 +44,7 @@ def register(request):
             password = request.POST["password"]
             confirmation = request.POST["confirmation"]
             if password != confirmation:
-                return render(request, "network/register.html", {
+                return render(request, "VetBooker/register.html", {
                     "message": "Passwords must match."
                 })
 
@@ -53,12 +53,12 @@ def register(request):
                 user = User.objects.create_user(username, email, password)
                 user.save()
             except IntegrityError:
-                return render(request, "network/register.html", {
+                return render(request, "VetBooker/register.html", {
                     "message": "Username already taken."
                 })
             return HttpResponseRedirect(reverse("index"))
         else:
-            return render(request, "network/register.html")
+            return render(request, "VetBooker/register.html")
     else:
             return HttpResponseRedirect(reverse("index"))
 
@@ -71,4 +71,18 @@ def index(request):
     # cal.cssclasses = ["mon text-bold", "tue", "wed", "thu", "fri", "sat", "sun red"]
     # print(cal.formatmonth(yy, mm, withyear=True))
 
-    return render(request, "VetBooker/index.html", {'message': "yo"})
+    return render(request, "VetBooker/index.html", {'message': f"Welcome, {request.user.username}."})
+
+def book(request):
+    if request.method == "POST":
+        return render(request, "VetBooker/book.html")
+    else:
+
+        return render(request, "VetBooker/book.html")
+
+def manage(request):
+    if request.method == "POST":
+        return render(request, "VetBooker/manage.html")
+    else:
+        
+        return render(request, "VetBooker/manage.html")

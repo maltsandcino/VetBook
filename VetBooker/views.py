@@ -3,7 +3,8 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from .models import User
+from .models import User, Pet, Client, Booking, Procedure, Vet
+from django import forms
 import calendar
 
 # Create your views here.
@@ -84,5 +85,18 @@ def manage(request):
     if request.method == "POST":
         return render(request, "VetBooker/manage.html")
     else:
+
+        ### Edit a pet based on owners telephone number.
+        # petqs = Pet.objects.all()
+        # ownerqs = Client.objects.all()
+        # pet_list = []
+        # owner_list = []
+        # for pet, owner in zip(petqs, ownerqs):
+        #     pet_list.append(pet)
+        #     owner_list.append(owner)
+        
+        # print(pet_list[0])
+        # print(pet_list[0].pet_owner.all()[0].name)
+        # print(owner_list[0].owner_pet.all()[0].name)
         
         return render(request, "VetBooker/manage.html")

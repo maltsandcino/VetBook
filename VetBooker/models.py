@@ -17,7 +17,7 @@ class Vet(models.Model):
 
 class Client(models.Model):
     name = models.TextField(blank=True)
-    telephone = models.TextField(blank=True)
+    telephone = models.TextField(blank=True, unique=True)
     email = models.TextField(blank=True)
     address = models.TextField(blank=True)
     pet = models.ManyToManyField("Pet", related_name="pet_owner", null=True, blank=True)

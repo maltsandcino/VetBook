@@ -37,9 +37,8 @@ class Shift(models.Model):
     start_time = models.TimeField(auto_now_add=False, null=True)
     end_time = models.TimeField(auto_now_add=False, null=True)
     def __str__(self):
-        shift_string = self.name
-        return shift_string
-
+        return self.name
+    
 class Booking(models.Model):
     title = models.TextField(blank=True, null=True)
     vet = models.ManyToManyField("Vet", related_name="booking_vet", null=True)
@@ -53,7 +52,7 @@ class Booking(models.Model):
     
     def __str__(self):
         
-        return f"{self.title} + {self.day} + {self.start_time}"
+        return f"{self.vet_bookings.all()[0].name} + {self.day} + {self.start_time}"
 
 class Pet(models.Model):
     name = models.TextField(blank=True)

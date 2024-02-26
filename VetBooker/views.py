@@ -87,6 +87,7 @@ def manage(request):
     else:
 
         ### Edit a pet based on owners telephone number.
+        
         # petqs = Pet.objects.all()
         # ownerqs = Client.objects.all()
         # pet_list = []

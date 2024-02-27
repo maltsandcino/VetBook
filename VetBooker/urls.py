@@ -13,6 +13,6 @@ urlpatterns = [
 
     # API ROUTING
    
-    # path("posts", views.new_post, name="newpost"),
+    path("clientsearch", views.c_search, name="csearch"),
    
 ]

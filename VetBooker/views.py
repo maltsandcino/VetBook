@@ -6,8 +6,13 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from .models import User, Pet, Client, Booking, Procedure, Vet
 from django import forms
 import calendar
+from django.http import JsonResponse
+import json
+from django.views.decorators.csrf import csrf_exempt
+
 
 # Create your views here.
+
 
 def login_view(request):
     if request.method == "POST":
@@ -81,13 +86,32 @@ def book(request):
 
         return render(request, "VetBooker/book.html")
 
+def c_search(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        number = data.get("number", "")
+
+        client = Client.objects.get(telephone=number)
+
+        if not client:
+            return JsonResponse({"message": "Client not found."}, status=400)
+        
+        print(client)
+
+        print(client.serialize())
+
+        return JsonResponse(client.serialize(), status=200)
+        
+    else:
+        return JsonResponse({"error": "POST request required."})
+
 def manage(request):
     if request.method == "POST":
         return render(request, "VetBooker/manage.html")
     else:
 
         ### Edit a pet based on owners telephone number.
-        
+
         # petqs = Pet.objects.all()
         # ownerqs = Client.objects.all()
         # pet_list = []

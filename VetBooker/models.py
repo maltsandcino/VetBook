@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from rest_framework import serializers
 
 # Create your models here.
 
@@ -25,6 +26,30 @@ class Client(models.Model):
     bills = models.ManyToManyField("Bill", related_name="bills", null=True, blank=True)
     def __str__(self):
         return self.name
+    
+    def serialize(self):
+        class PetSerializer(serializers.ModelSerializer):
+            class Meta:
+                model = Pet
+                fields = ('id', 'name', 'species')
+
+        class ClientSerializer(serializers.ModelSerializer):
+            pet = PetSerializer(read_only=True, many=True)
+            class Meta:
+                model = Client
+                fields = '__all__'
+
+        return ClientSerializer(self).data
+    
+    # def serialize(self):
+    #     return {
+    #         "id": self.id,
+    #         "name": self.sender.email,
+    #         "pets": self.pet,
+    #         "email": self.email,
+    #         "address": self.address,
+    #         "bookings": self.bookings,
+    #     }
 
 class Skill(models.Model):
     skill = models.TextField(blank=True)

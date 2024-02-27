@@ -4,14 +4,16 @@
 <div class="centerText">
     <h2>Client Management</h2>
     <h4>What do you want to do?</h4>
-    <div class="customer">
-        <p>Manage / Add Customer</p>
+    <div class="customer" onclick="manageCustomer()">
+        <p>Manage existing client </p>
     </div>
-    <div class="pet">
-        <p>Manage / Add Pet</p>
+    <div class="pet" onclick="managePet">
+        <p>Add a new client</p>
     </div>
 </div>
-<div id="managementDiv"></div>
+<div id="managementDiv" class="notVisible">
+    <!-- <label for=""></label> -->
+</div>
 {% endblock %}
 
 <!-- Add javascript to make the Div visible in order to add and remove pets and customers as well as update them-->

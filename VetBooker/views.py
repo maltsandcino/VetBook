@@ -98,7 +98,7 @@ def c_search(request):
         
         print(client)
 
-        print(client.serialize())
+        print(client.serialize()['pets'])
 
         return JsonResponse(client.serialize(), status=200)
         

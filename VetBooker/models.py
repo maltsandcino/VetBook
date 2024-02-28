@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from rest_framework import serializers
+# from rest_framework import serializers
 
 # Create your models here.
 
@@ -27,29 +27,36 @@ class Client(models.Model):
     def __str__(self):
         return self.name
     
-    def serialize(self):
-        class PetSerializer(serializers.ModelSerializer):
-            class Meta:
-                model = Pet
-                fields = ('id', 'name', 'species')
-
-        class ClientSerializer(serializers.ModelSerializer):
-            pet = PetSerializer(read_only=True, many=True)
-            class Meta:
-                model = Client
-                fields = '__all__'
-
-        return ClientSerializer(self).data
-    
     # def serialize(self):
-    #     return {
-    #         "id": self.id,
-    #         "name": self.sender.email,
-    #         "pets": self.pet,
-    #         "email": self.email,
-    #         "address": self.address,
-    #         "bookings": self.bookings,
-    #     }
+    #     class PetSerializer(serializers.ModelSerializer):
+    #         class Meta:
+    #             model = Pet
+    #             fields = ('id', 'name', 'species')
+
+    #     class ClientSerializer(serializers.ModelSerializer):
+    #         pet = PetSerializer(read_only=True, many=True)
+    #         class Meta:
+    #             model = Client
+    #             fields = '__all__'
+
+    #     return ClientSerializer(self).data
+    
+    # implementing my own serialization without relying on the REST framework. This results in a much better JSON object!
+
+    def serialize(self):
+        pet_query_set = Pet.objects.filter(owner=self)
+        pet_list = []
+        for pet in pet_query_set:
+            pet_list.append({'name': pet.name, 'species': pet.species, 'id': pet.id})
+
+        return {
+            "id": self.id,
+            "name": self.name,
+            "pets": pet_list,
+            "email": self.email,
+            "address": self.address,
+            # "bookings": self.bookings,
+        }
 
 class Skill(models.Model):
     skill = models.TextField(blank=True)

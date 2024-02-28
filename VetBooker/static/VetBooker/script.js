@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () =>{
 
 function manageCustomer() {
     let managementDiv = document.querySelector("#managementDiv");
+    managementDiv.innerHTML = "";
     managementDiv.classList.toggle('notVisible');
     const customerSearch = document.createElement('div')
     customerSearch.innerHTML = `<fieldset><label for="numberSearch">For existing customers, enter their telephone number:</label>
@@ -44,7 +45,9 @@ function manageCustomerSearch() {
             alert("Customer not found, please review telephone number.");
         }
     })
-    .then(data => { })
+    .then(data => {
+        console.log(data)
+     })
 }
 
 function submitBooking() {

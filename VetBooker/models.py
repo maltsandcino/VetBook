@@ -21,7 +21,7 @@ class Client(models.Model):
     telephone = models.TextField(blank=True, unique=True)
     email = models.TextField(blank=True)
     address = models.TextField(blank=True)
-    pet = models.ManyToManyField("Pet", related_name="pet_owner", null=True, blank=True)
+    # pet = models.ManyToManyField("Pet", related_name="pet_owner", null=True, blank=True)
     bookings = models.ManyToManyField("Booking", related_name="client_bookings", null=True, blank=True)
     bills = models.ManyToManyField("Bill", related_name="bills", null=True, blank=True)
     def __str__(self):
@@ -92,7 +92,8 @@ class Pet(models.Model):
     breed = models.TextField(blank=True, null=True)
     conditions = models.TextField(blank=True)
     bookings = models.ManyToManyField("Booking", related_name="pet_bookings", null=True, blank=True)
-    owner = models.ManyToManyField("Client", related_name="owner_pet", null=True, blank=True)
+    # owner = models.ManyToMany("Client", related_name="owner_pet", null=True, blank=True)
+    owner = models.ForeignKey("Client", related_name="owner_pet", null=True, blank=True, on_delete=models.CASCADE)
     comments = models.ManyToManyField("Booking", related_name="booking_comments", null=True, blank=True)
     def __str__(self):
         return self.name

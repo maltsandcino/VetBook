@@ -55,6 +55,7 @@ class Client(models.Model):
             "pets": pet_list,
             "email": self.email,
             "address": self.address,
+            "telephone": self.telephone,
             # "bookings": self.bookings,
         }
 

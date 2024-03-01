@@ -14,6 +14,28 @@
     justify-content: center;
 }
 
+#categories {
+    width: 15vw;
+}
+
+#results {
+    width: 30vw;
+}
+
+.customerResults {
+    width: 45vw;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
 .notVisible {
     visibility: hidden;
 }

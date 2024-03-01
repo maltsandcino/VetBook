@@ -15,22 +15,23 @@ function manageCustomer() {
     document.getElementById('customerEdit').addEventListener('click', manageCustomerSearch)
 }
 
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-}
+// function getCookie(name) {
+//     const value = `; ${document.cookie}`;
+//     const parts = value.split(`; ${name}=`);
+//     if (parts.length === 2) return parts.pop().split(';').shift();
+// }
 
 function manageCustomerSearch() {
     let clientNumber = document.getElementById('numberSearch').value;
-    console.log(clientNumber);
-    const csrfToken = getCookie('csrftoken');
+    
+    // const csrfToken = getCookie('csrftoken');
+ 
 
     fetch('/clientsearch', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken // Include the CSRF token in the header
+            'X-CSRFToken': `${document.cookie.split('=').pop()}` // Include the CSRF token in the header
         },
         body: JSON.stringify({
             number: clientNumber
@@ -38,7 +39,7 @@ function manageCustomerSearch() {
     })
     .then(response =>{
         if(response.ok) {
-            console.log("number found")
+            
             return response.json();
         }
         else {
@@ -46,7 +47,15 @@ function manageCustomerSearch() {
         }
     })
     .then(data => {
-        console.log(data)
+        let managementDiv = document.querySelector("#managementDiv");
+        const customerResults = document.createElement('div');
+        customerResults.className = 'customerResults'
+        customerResults.innerHTML = `<div class='resultsTop' style='text-align:center;'>${data.name}</div> <div name='resultsBigContainer' class='flex-row'> <div id='categories'><p>E-Mail</p><p>Telephone</p><p>Address</p><p>Pets</p></div><div id='results'>${data.email}</p> <p>${data.address}</p> <p>${data.telephone}</p></div> </div>`
+        managementDiv.append(customerResults);
+        let results = document.getElementById('results');
+        const petInfo = data.pets.map((pet) => `${pet.name}: ${pet.species}`);
+        results.innerHTML += petInfo.join('<hr>');
+
      })
 }
 

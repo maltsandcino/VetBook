@@ -14,5 +14,7 @@ urlpatterns = [
     # API ROUTING
    
     path("clientsearch", views.c_search, name="csearch"),
+    path("petremoval", views.pet_removal, name="pet_removal"),
+    path("clientedit", views.client_edit, name="clientedit"),
    
 ]

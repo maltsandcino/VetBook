@@ -96,11 +96,70 @@ def c_search(request):
         if not client:
             return JsonResponse({"message": "Client not found."}, status=400)
         
-        print(client)
-
-        print(client.serialize()['pets'])
-
         return JsonResponse(client.serialize(), status=200)
+        
+    else:
+        return JsonResponse({"error": "POST request required."})
+    
+def client_edit(request):
+    
+    if request.method == "POST":
+        data = json.loads(request.body)
+        print(data)
+        id_number = data.get("id", "")
+        field_to_edit = data.get("field", "")
+        new_value = data.get("new_value", "")
+        client = Client.objects.get(id=id_number)
+        print(client)
+        if not client:
+            pass
+        else:
+            if field_to_edit == "name":
+                client.name = new_value
+                client.save()
+                return JsonResponse({"message": "Name Updated."}, status=200)
+            if field_to_edit == "telephone":
+                client.telephone = new_value
+                client.save()
+                return JsonResponse({"message": "Telephone Updated."}, status=200)
+            if field_to_edit == "email":
+                client.email = new_value
+                client.save()
+                return JsonResponse({"message": "Email Updated."}, status=200)
+            if field_to_edit == "address":
+                client.address = new_value
+                client.save()
+                return JsonResponse({"message": "Address Updated."}, status=200)
+
+    
+    return JsonResponse({"error": "POST request required."})
+        
+
+def pet_removal(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        print(data)
+        id_number = data.get("id", "")
+        print(id_number)
+        
+        print(id_number)
+
+        pet = Pet.objects.get(id=id_number)
+        print(pet)
+
+        if not pet:
+            return JsonResponse({"message": "Pet not found."}, status=400)
+        
+        print(pet)
+        print(pet.serialize())
+
+        pet.owner = None
+        pet.save()
+
+        print(pet)
+        print(pet.serialize())
+
+        return JsonResponse({"message":"Pet successfully removed"}, status=200)
         
     else:
         return JsonResponse({"error": "POST request required."})

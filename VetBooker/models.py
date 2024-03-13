@@ -9,10 +9,10 @@ class User(AbstractUser):
 
 class Vet(models.Model):
     name = models.TextField(blank=True)
-    priority_skills = models.ManyToManyField("Skill", related_name="priority_skill", null=True)
-    secondary_skills = models.ManyToManyField("Skill", related_name="secondary_skill", null=True)
-    general_availibility = models.ManyToManyField("Shift", null=True)
-    bookings = models.ManyToManyField("Booking", related_name="vet_bookings", null=True, blank=True)
+    priority_skills = models.ManyToManyField("Skill", related_name="priority_skill")
+    secondary_skills = models.ManyToManyField("Skill", related_name="secondary_skill")
+    general_availibility = models.ManyToManyField("Shift")
+    bookings = models.ManyToManyField("Booking", related_name="vet_bookings", blank=True)
     def __str__(self):
         return self.name
 
@@ -22,8 +22,8 @@ class Client(models.Model):
     email = models.TextField(blank=True)
     address = models.TextField(blank=True)
     # pet = models.ManyToManyField("Pet", related_name="pet_owner", null=True, blank=True)
-    bookings = models.ManyToManyField("Booking", related_name="client_bookings", null=True, blank=True)
-    bills = models.ManyToManyField("Bill", related_name="bills", null=True, blank=True)
+    bookings = models.ManyToManyField("Booking", related_name="client_bookings", blank=True)
+    bills = models.ManyToManyField("Bill", related_name="bills", blank=True)
     def __str__(self):
         return self.name
     
@@ -74,17 +74,16 @@ class Shift(models.Model):
     
 class Booking(models.Model):
     title = models.TextField(blank=True, null=True)
-    vet = models.ManyToManyField("Vet", related_name="booking_vet", null=True)
-    Pet = models.ManyToManyField("Pet", related_name="booking_pet", null=True)
-    Client = models.ManyToManyField("Client", related_name="booking_owner", null=True)
+    vet = models.ManyToManyField("Vet", related_name="booking_vet")
+    Pet = models.ManyToManyField("Pet", related_name="booking_pet")
+    Client = models.ManyToManyField("Client", related_name="booking_owner")
     day = models.DateField(auto_now_add=False, null=True)
     start_time = models.TimeField(auto_now_add=False)
     end_time = models.TimeField(auto_now_add=False)
-    procedure = models.ManyToManyField("Procedure", related_name="booking_procedure", null=True)
+    procedure = models.ManyToManyField("Procedure", related_name="booking_procedure")
     comments = models.TextField(blank=True)
     
     def __str__(self):
-        
         return f"{self.vet_bookings.all()[0].name} + {self.day} + {self.start_time}"
 
 class Pet(models.Model):
@@ -92,12 +91,31 @@ class Pet(models.Model):
     species = models.TextField(blank=True)
     breed = models.TextField(blank=True, null=True)
     conditions = models.TextField(blank=True)
-    bookings = models.ManyToManyField("Booking", related_name="pet_bookings", null=True, blank=True)
+    bookings = models.ManyToManyField("Booking", related_name="pet_bookings", blank=True)
     # owner = models.ManyToMany("Client", related_name="owner_pet", null=True, blank=True)
     owner = models.ForeignKey("Client", related_name="owner_pet", null=True, blank=True, on_delete=models.CASCADE)
-    comments = models.ManyToManyField("Booking", related_name="booking_comments", null=True, blank=True)
+    comments = models.ManyToManyField("Booking", related_name="booking_comments", blank=True)
+
     def __str__(self):
         return self.name
+    
+    def serialize(self):
+
+        bookings = Booking.objects.filter(Pet=self)
+        booking_list = []
+        for booking in bookings:
+            booking_list.append({'name': booking.Pet, 'day': booking.day, 'start time': booking.start_time, 'procedure': booking.procedure} )
+        
+
+        return {
+            "id": self.id,
+            "name": self.name,
+            "species": self.species,
+            "conditions": self.conditions,
+            "bookings": booking_list,
+            "owner": self.owner,
+            "comments": self.comments
+        }
 
 class Procedure(models.Model):
     name = models.TextField(blank=True)

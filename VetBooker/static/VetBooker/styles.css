@@ -49,6 +49,33 @@ label {
     margin-bottom: 5px;
 }
 
+.petList {
+    border-bottom: 1px solid grey;
+}
+
+.twenty {
+    margin: auto;
+    width: 20vw;
+}
+.hoverClick:hover {
+    cursor: pointer;
+    color: #fff;
+    border-bottom: 1px dotted white;
+}
+
+#managementDiv {
+
+    width: 50vw;
+    margin: auto;
+}
+
+.clearInput {
+    background-color: none;
+    background: none;
+    border: none;
+    outline: none;
+}
+
 /* .mon {
     color: red;
 } */

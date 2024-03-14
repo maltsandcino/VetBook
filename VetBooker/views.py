@@ -105,12 +105,12 @@ def client_edit(request):
     
     if request.method == "POST":
         data = json.loads(request.body)
-        print(data)
+        
         id_number = data.get("id", "")
         field_to_edit = data.get("field", "")
         new_value = data.get("new_value", "")
         client = Client.objects.get(id=id_number)
-        print(client)
+        
         if not client:
             pass
         else:
@@ -138,49 +138,33 @@ def client_edit(request):
 def pet_removal(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        print(data)
         id_number = data.get("id", "")
-        print(id_number)
-        
-        print(id_number)
-
         pet = Pet.objects.get(id=id_number)
-        print(pet)
-
         if not pet:
             return JsonResponse({"message": "Pet not found."}, status=400)
-        
-        print(pet)
-        print(pet.serialize())
-
         pet.owner = None
         pet.save()
-
-        print(pet)
-        print(pet.serialize())
-
         return JsonResponse({"message":"Pet successfully removed"}, status=200)
         
     else:
         return JsonResponse({"error": "POST request required."})
 
+def pet_search(request):
+    if request.method == "POST":
+        # data = json.loads(request.body)
+        unowned = Pet.objects.filter(owner=None)
+        pet_options = []
+        for pet in unowned:
+            pet_options.append({"name": pet.name, "species": pet.species, "id": pet.id})
+        print(pet_options)
+        if not unowned:
+            return JsonResponse({"message":"No pets found"}, status=400)
+        else:
+            return JsonResponse({"options": pet_options}, status=200)
+    return JsonResponse({"message":"No pets found"}, status=400)
+
 def manage(request):
     if request.method == "POST":
         return render(request, "VetBooker/manage.html")
-    else:
-
-        ### Edit a pet based on owners telephone number.
-
-        # petqs = Pet.objects.all()
-        # ownerqs = Client.objects.all()
-        # pet_list = []
-        # owner_list = []
-        # for pet, owner in zip(petqs, ownerqs):
-        #     pet_list.append(pet)
-        #     owner_list.append(owner)
         
-        # print(pet_list[0])
-        # print(pet_list[0].pet_owner.all()[0].name)
-        # print(owner_list[0].owner_pet.all()[0].name)
-        
-        return render(request, "VetBooker/manage.html")
+    return render(request, "VetBooker/manage.html")

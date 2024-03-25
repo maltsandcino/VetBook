@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from .models import User, Pet, Client, Booking, Procedure, Vet
+from .models import User, Pet, Client, Booking, Procedure, Vet, Skill
 from django import forms
 import calendar
 from django.http import JsonResponse
@@ -12,6 +12,27 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 # Create your views here.
+
+def get_doctors(request):
+    if request.method == "POST":
+        ###Grab data entered by user
+        data = json.loads(request.body)
+        skill = data.get("domain", "")
+        skill = skill.title()
+        ##Make sureto find the skill ID
+        skill = Skill.objects.get(skill=skill)
+
+        ##Look for vets with this skill ID
+        vets = Vet.objects.filter(priority_skills=skill)
+        ##Add these vets to list with relevant information
+        vet_list = []
+        for vet in vets:
+            vet_list.append({"vet": vet.name, "id": vet.id})
+        ##Return information to front end
+        if not vets:
+            return JsonResponse({"message":"No vets found with this skill"}, status=400)
+        else:
+            return JsonResponse({"vet_list": vet_list}, status=200)
 
 
 def login_view(request):
@@ -163,6 +184,22 @@ def pet_search(request):
             return JsonResponse({"options": pet_options}, status=200)
     return JsonResponse({"message":"No pets found"}, status=400)
 
+def add_owner(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        owner_id = data.get("owner_id", "")
+        pet_id = data.get("pet_id", "")
+        pet = Pet.objects.get(id=pet_id)
+        if not pet:
+            return JsonResponse({"message":"Pet not found"}, status=400)
+        user = Client.objects.get(id=owner_id)
+        if not user:
+            return JsonResponse({"message":"Owner not found"}, status=400)
+        pet.owner = user
+        pet.save()
+        return JsonResponse(user.serialize(), status=200)
+    
+    return JsonResponse({"message":"Pet not found"}, status=400)
 def manage(request):
     if request.method == "POST":
         return render(request, "VetBooker/manage.html")

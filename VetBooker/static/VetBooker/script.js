@@ -1,7 +1,45 @@
 // Fetch data for booking, to see what the soonest availability is based on specialization. This data will be drawn from the django form.
 document.addEventListener('DOMContentLoaded', () =>{
+    document.getElementById("medicalDomainSelect").addEventListener('click', () => {doctorSelect()})
     ;
 })
+
+function doctorSelect() {
+    let medicine = document.getElementById("medicalDomainSelector").value
+    console.log(medicine)
+    fetch('/doctorSearch', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': `${document.cookie.split('=').pop()}` // Include the CSRF token in the header
+        },
+        body: JSON.stringify({
+            domain: medicine
+        })
+    })
+    .then(response =>{
+        if(response.ok) {
+            
+            return response.json();
+        }
+        else {
+            alert("We do not have a doctor practising with that speciality");
+        }
+    })
+    .then(data => {
+        let vetDiv = document.getElementById("doctorList")
+        const results = document.createElement('div')
+        
+        for (element of data.vet_list){
+            console.log(element.vet)
+        }
+
+        
+        const vetInfo = data.vet_list.map((vet) => `<p>${vet.vet}: ${vet.id} </p>`);
+        results.innerHTML += vetInfo.join('');
+        console.log(results)
+})
+}
 
 function manageCustomer() {
     let managementDiv = document.querySelector("#managementDiv");
@@ -23,8 +61,11 @@ function manageCustomer() {
 
 function manageCustomerSearch(args) {
     
-    if(!document.getElementById("managePets").classList.contains("notVisible")){
-        document.getElementById("managePets").classList.toggle("notVisible")
+    if(document.getElementById("existingPets")){
+        document.getElementById("existingPets").remove()
+        document.getElementById("managePets").classList.toggle('notVisible')
+        document.getElementById("managePets").innerHTML = `<button id="addExisting">Add Existing Pets</button><button id="createNew">Add New Pet</Button>`
+        
     }
     let clientNumber = document.getElementById('numberSearch').value;
     
@@ -85,6 +126,9 @@ function manageCustomerSearch(args) {
      })
 }
 function showPetsModal(data) {
+    if(document.getElementById("selectContainer")){document.getElementById("selectContainer").classList.toggle("notVisible");
+
+    }
     document.getElementById("managePets").classList.toggle('notVisible');
     document.getElementById("addExisting").addEventListener('click', (event) => {getExistingPet(data)});
     document.getElementById("createNew").addEventListener('click', (event) => {addNewPet(data)});
@@ -92,6 +136,9 @@ function showPetsModal(data) {
 
 function getExistingPet(data){
     user_id = data.id
+    if(document.getElementById("selectContainer")){
+        document.getElementById("selectContainer").innerHTML = ""
+    }
     fetch('/petSearch', {
         method: 'POST',
         headers: {
@@ -119,9 +166,13 @@ function getExistingPet(data){
         }
             
         // console.log(data)
+        if(document.getElementById("existingPets")){
+            document.getElementById("existingPets").innerHTML = ""            
+        }
     const existingPets = document.createElement('div');
     existingPets.classList = "flex-center-wrap"
-    existingPets.innerHTML = `<div class="hundredW"><select class="marginAuto" name="petSelect" id="petSelect"></select></div>`;
+    existingPets.id = "existingPets"
+    existingPets.innerHTML = `<div class="hundredW" id="selectContainer"><select class="marginAuto" name="petSelect" id="petSelect"></select><button id="addExisting">Submit Change</button></div>`;
     existingPets.innerHTML += document.getElementById("managePets").innerHTML;
     document.getElementById("managePets").innerHTML = "";
     document.getElementById("managePets").append(existingPets);
@@ -134,11 +185,43 @@ function getExistingPet(data){
         selectList = document.getElementById("petSelect")
         console.log(selectList)
         selectList.appendChild(object)
-        
+   
     });
-
+    document.getElementById("addExisting").addEventListener("click", () => {
+        pet_id = document.getElementById("petSelect").value
+        addToOwner(user_id, pet_id);
+    })
     
 })
+}
+
+function addToOwner(user, pet){
+    fetch('/addOwner', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': `${document.cookie.split('=').pop()}` // Include the CSRF token in the header
+        },
+        body: JSON.stringify({
+            owner_id: user,
+            pet_id: pet
+        })
+    })
+    .then(response =>{
+        if(response.ok) {
+            
+            return response.json();
+        }
+        else {
+            alert("No unowned Pet or Owner found in Database matching these details");
+        }
+    })
+    //Create dropdown menu with exant pets
+    .then(data => {
+        console.log(data)
+
+            manageCustomerSearch()
+        })
 }
 
 function addNewPet(data){

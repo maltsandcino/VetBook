@@ -10,18 +10,32 @@ class User(AbstractUser):
 class Vet(models.Model):
     name = models.TextField(blank=True)
     priority_skills = models.ManyToManyField("Skill", related_name="priority_skill")
-    secondary_skills = models.ManyToManyField("Skill", related_name="secondary_skill")
     general_availibility = models.ManyToManyField("Shift")
     bookings = models.ManyToManyField("Booking", related_name="vet_bookings", blank=True)
     def __str__(self):
         return self.name
+    
+    def serialize(self):
+
+        bookings = Booking.objects.filter(vet=self)
+        booking_list = []
+        for booking in bookings:
+            booking_list.append({'pet name': booking.Pet, 'day': booking.day, 'start time': booking.start_time, 'end time': booking.end_time, 'procedure': booking.procedure})
+
+        return {
+            "id": self.id,
+            "name": self.name,
+            "priority_skills": self.priority_skills,
+            "general_availibility": self.general_availibility,
+            "bookings": booking_list,
+            # "bookings": self.bookings,
+        }
 
 class Client(models.Model):
     name = models.TextField(blank=True)
     telephone = models.TextField(blank=True, unique=True)
     email = models.TextField(blank=True)
     address = models.TextField(blank=True)
-    # pet = models.ManyToManyField("Pet", related_name="pet_owner", null=True, blank=True)
     bookings = models.ManyToManyField("Booking", related_name="client_bookings", blank=True)
     bills = models.ManyToManyField("Bill", related_name="bills", blank=True)
     def __str__(self):
@@ -92,7 +106,6 @@ class Pet(models.Model):
     breed = models.TextField(blank=True, null=True)
     conditions = models.TextField(blank=True)
     bookings = models.ManyToManyField("Booking", related_name="pet_bookings", blank=True)
-    # owner = models.ManyToMany("Client", related_name="owner_pet", null=True, blank=True)
     owner = models.ForeignKey("Client", related_name="owner_pet", null=True, blank=True, on_delete=models.CASCADE)
     comments = models.ManyToManyField("Booking", related_name="booking_comments", blank=True)
 

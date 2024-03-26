@@ -1,7 +1,8 @@
 // Fetch data for booking, to see what the soonest availability is based on specialization. This data will be drawn from the django form.
 document.addEventListener('DOMContentLoaded', () =>{
+    if (document.getElementById("medicalDomainSelect")){
     document.getElementById("medicalDomainSelect").addEventListener('click', () => {doctorSelect()})
-    ;
+    ;}
 })
 
 function doctorSelect() {
@@ -23,22 +24,30 @@ function doctorSelect() {
             return response.json();
         }
         else {
-            alert("We do not have a doctor practising with that speciality");
+            console.log("We do not have a doctor practising with that speciality");
+            let vetDiv = document.getElementById("doctorList");
+            vetDiv.innerHTML = "";
         }
     })
     .then(data => {
-        let vetDiv = document.getElementById("doctorList")
-        const results = document.createElement('div')
-        
-        for (element of data.vet_list){
-            console.log(element.vet)
+        if(data){
+        let vetDiv = document.getElementById("doctorList");
+        vetDiv.innerHTML = "";
+        const vetInfo = data.vet_list.map((vet) => `<div class="vetSelector" data-value=${vet.id}>${vet.vet}</div>`);
+        vetDiv.innerHTML += vetInfo.join('');
+        vetDiv.addEventListener('click', (event) => {appointmentSearch(event)})
         }
-
+        else {
+        let vetDiv = document.getElementById("doctorList");
+        vetDiv.innerHTML = "We do not have a doctor practising with that speciality";
+        }
         
-        const vetInfo = data.vet_list.map((vet) => `<p>${vet.vet}: ${vet.id} </p>`);
-        results.innerHTML += vetInfo.join('');
-        console.log(results)
 })
+}
+
+function appointmentSearch(e){
+    doctorID = e.target.dataset.value
+    duration = 1
 }
 
 function manageCustomer() {

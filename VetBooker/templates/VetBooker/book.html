@@ -4,16 +4,22 @@
 {% csrf_token %}
 <h3 class="pageTitle">Book appointment:</h3>
 
-<div class="flex-column fortyVW">
+<div class="flex-column fortyVW marginsAuto">
     <div class="flex-spaced-between">
         <p>Customer Telephone</p>
         <input type="text" placeholder="0480 12 34 56" id="bookingPhonenumber">
     </div>
+    <br>
+    <div class="flex-spaced-between">
+        
+        <button class="marginsAuto">Select Client</button>
+    </div>
 </div>
 <br>
-<div class="flex-column fortyVW">
+<!-- Below, the div will appear after the number is searched -->
+<div class="flex-column fortyVW marginsAuto">
     <div class="flex-spaced-between">
-        <p>Customer Name</p>
+        <p>Client Name:</p>
         <p id="customerName">Placeholder</p>
     </div>
     <div class="flex-spaced-between">
@@ -28,7 +34,7 @@
                 <option value="Cardiology">Cardiology</option>
                 <option value="Dermatology">Dermatology</option>
                 <option value="Internal Medicine">Internal Medicine</option>
-                <option value="Opthamology">Ophthamology</option>
+                <option value="Ophthamology">Ophthamology</option>
                 <option value="Neurology">Neurology</option>
                 <option value="Oncology">Oncology</option>
                 <option value="Urology">Urology</option>
@@ -36,17 +42,19 @@
             </select></p>
     </div>
     <div class="flex-spaced-between">
-        <button id="medicalDomainSelect">Choose Doctor</button>
-    </div>
-    <!-- <div class="flex-spaced-between">
-        <p>Day:</p>
-        <p id="petChoice"><input type="date"></p>
+        <label for="durationSelector">Duration:</label>
+        <p id="duration">
+            <select name="durationSelector" id="durationSelector">
+                <option value="15">Consulatation: 15 Minutes</option>
+                <option value="30">Examination: 30 Minutes</option>
+                <option value="60">Small Procedure: 60 Minutes</option>
+                <option value="120">Complex Procedure: 120 Minutes</option>               
+            </select></p>
     </div>
     <div class="flex-spaced-between">
-        <p>Time:</p>
-        <p id="petChoice"></p>
-    </div> -->
+        <button id="medicalDomainSelect" class="marginsAuto">Choose Doctor</button>
+    </div>
 </div>
-<div id="doctorList"></div>
+<div id="doctorList" class="flexGallery"></div>
 <div class="appointmentList"></div>
 {% endblock %}

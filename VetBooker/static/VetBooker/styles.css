@@ -48,6 +48,27 @@
     justify-content: space-around;
 }
 
+.flexGallery {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.vetSelector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 110px;
+    border-radius: 10px;
+    background-color: #2b3035;
+    border: 1px solid gray;
+    color: white;
+}
+
 .flex-spaced-between {
     display: flex;
     flex-direction: row;

@@ -9,6 +9,7 @@ import calendar
 from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
+from datetime import date, timedelta
 
 
 # Create your views here.
@@ -21,7 +22,6 @@ def get_doctors(request):
         skill = skill.title()
         ##Make sureto find the skill ID
         skill = Skill.objects.get(skill=skill)
-
         ##Look for vets with this skill ID
         vets = Vet.objects.filter(priority_skills=skill)
         ##Add these vets to list with relevant information
@@ -34,6 +34,82 @@ def get_doctors(request):
         else:
             return JsonResponse({"vet_list": vet_list}, status=200)
 
+def get_avails(request):
+    if request.method == "POST":
+        ###Looking to see what appointments already exist in the coming week
+        today = date.today()
+        week_in_future = today + timedelta(days=6)
+     
+        data = json.loads(request.body)
+        vet_ID = data.get("doctorID", "")
+        vet = Vet.objects.get(id=vet_ID)
+        ###We need to know the length of the duration of the appointment in order to properly find available slots
+        duration = int(data.get("duration", ""))      
+        planned_bookings = Booking.objects.filter(vet=vet).filter(day__gte=today).filter(day__lt=week_in_future)
+        bookings = []
+        for b in planned_bookings:
+            bookings.append(b)
+        
+        ###Put all possible times into a list and into a dict
+        all_time_slots = list()
+        morning_hours = ["09"] + [str(h) for h in range(10,12)]
+        evening_hours = ["12"] + [str(h) for h in range(13, 17)]
+        minutes = ["00", "15", "30", "45"]
+        for h in morning_hours:
+            for m in minutes:
+                all_time_slots.append(h+":"+m)
+        for h in evening_hours:
+            for m in minutes:
+                all_time_slots.append(h+":"+m)
+        
+        week_slots = {}
+        
+        for i in range(7):
+            today = today + timedelta(days=i)
+            week_slots[str(today)] = all_time_slots[:]
+        
+        ###Remove times at ends of day for durations that take more than 15 minutes:
+        
+        for key in week_slots:
+            if duration == 1:
+                week_slots[key] = week_slots[key][0:31]
+            if duration == 2:
+                week_slots[key] = week_slots[key][0:29]
+            if duration == 3:
+                week_slots[key] = week_slots[key][0:25]
+     
+        ###Remove times that dont fit. This bit is cumbersome
+        ITERATION_LIST = [0, 1, 3, 7]
+        ITERATOR_LIST = [0, 1, 2, 3]
+        for i, j in zip(ITERATOR_LIST, ITERATION_LIST):
+            if duration == i:
+                for b in bookings:
+                    print(b.start_time)
+                    apt_time = str(b.start_time)[0:5]
+                    day = str(b.day)
+                    if apt_time in week_slots[day]:
+                        index = week_slots[day].index(apt_time)
+                        if b.duration == 15:
+                            week_slots[day] = week_slots[day][0:index - j] + week_slots[day][index + 1:]                   
+                        if b.duration == 30:
+                            try:
+                                week_slots[day] = week_slots[day][0:index - j] + week_slots[day][index + j:]
+                            except:
+                                week_slots[day] = week_slots[day][0:index - j]  
+                        if b.duration == 60:
+                            try:
+                                week_slots[day] = week_slots[day][0:index - j] + week_slots[day][index + 3:]
+                            except:
+                                week_slots[day] = week_slots[day][0:index - j]
+                        if b.duration == 120:
+                            try:
+                                week_slots[day] = week_slots[day][0:index - j] + week_slots[day][index + 8:]
+                            except:
+                                week_slots[day] = week_slots[day][0:index - j]
+
+        
+        return JsonResponse(week_slots, status=200)
+    return JsonResponse({"message":"More information is necessary for this path"}, status=200)
 
 def login_view(request):
     if request.method == "POST":
@@ -200,6 +276,7 @@ def add_owner(request):
         return JsonResponse(user.serialize(), status=200)
     
     return JsonResponse({"message":"Pet not found"}, status=400)
+
 def manage(request):
     if request.method == "POST":
         return render(request, "VetBooker/manage.html")

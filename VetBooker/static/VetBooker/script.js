@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () =>{
 
 function doctorSelect() {
     let medicine = document.getElementById("medicalDomainSelector").value
-    console.log(medicine)
+    
     fetch('/doctorSearch', {
         method: 'POST',
         headers: {
@@ -31,15 +31,29 @@ function doctorSelect() {
     })
     .then(data => {
         if(data){
-        let vetDiv = document.getElementById("doctorList");
-        vetDiv.innerHTML = "";
-        const vetInfo = data.vet_list.map((vet) => `<div class="vetSelector" data-value=${vet.id}>${vet.vet}</div>`);
-        vetDiv.innerHTML += vetInfo.join('');
-        vetDiv.addEventListener('click', (event) => {appointmentSearch(event)})
+            
+            document.getElementById("doctorList").remove();
+            let sibDiv = document.getElementById("appointmentList");
+            let vDiv = document.createElement('div');
+            vDiv.classList.add("flexGallery");
+            vDiv.id = "doctorList";
+            sibDiv.parentNode.insertBefore(vDiv, sibDiv);
+            let vetDiv = vDiv;
+            vetDiv.innerHTML = "";
+            const vetInfo = data.vet_list.map((vet) => `<div class="vetSelector" data-value=${vet.id}>${vet.vet}</div>`);
+            vetDiv.innerHTML += vetInfo.join('');
+
+            const appointmentSearchHandler = (event) => { appointmentSearch(event) };
+
+            // Remove existing click event listener (if any)
+            vetDiv.removeEventListener('click', appointmentSearchHandler);
+
+            // Add the updated click event listener
+            vetDiv.addEventListener('click', appointmentSearchHandler);
         }
         else {
-        let vetDiv = document.getElementById("doctorList");
-        vetDiv.innerHTML = "We do not have a doctor practising with that speciality";
+            let vetDiv = document.getElementById("doctorList");
+            vetDiv.innerHTML = "We do not have a doctor practising with that speciality";
         }
         
 })
@@ -47,7 +61,45 @@ function doctorSelect() {
 
 function appointmentSearch(e){
     doctorID = e.target.dataset.value
-    duration = 1
+    console.log("check")
+    duration = document.getElementById("durationSelector").value
+    fetch('/getAvailableTimes', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': `${document.cookie.split('=').pop()}` // Include the CSRF token in the header
+        },
+        body: JSON.stringify({
+            doctorID: doctorID,
+            duration: duration
+        })
+    })
+    .then(response =>{
+        if(response.ok) {
+            
+            return response.json();
+        }
+        else {
+        }
+    })
+    .then(data => {
+        if(data){
+            const objectArray = Object.keys(data);
+            const key_one = objectArray[0]
+
+            const selector = document.createElement("select")
+            
+            for (value of data[key_one]){
+                selector.innerHTML = selector.innerHTML + `<option>${key_one}: ${value}</option>`
+            }
+            document.getElementById("appointmentList").innerHTML = `<select>${selector.innerHTML}</select>`
+            // console.log(data)
+        }
+        else {
+        // let vetDiv = document.getElementById("doctorList");
+        // vetDiv.innerHTML = "We do not have a doctor practising with that speciality";
+        }})
+    
 }
 
 function manageCustomer() {

@@ -87,18 +87,25 @@ class Shift(models.Model):
         return self.name
     
 class Booking(models.Model):
+
+    class Duration(models.IntegerChoices):
+        SHORT = 15, "Short"
+        MEDIUM = 30, "Medium"
+        LONG = 60, "Long"
+        XLONG = 120, "Extra Long"
+
     title = models.TextField(blank=True, null=True)
     vet = models.ManyToManyField("Vet", related_name="booking_vet")
     Pet = models.ManyToManyField("Pet", related_name="booking_pet")
     Client = models.ManyToManyField("Client", related_name="booking_owner")
     day = models.DateField(auto_now_add=False, null=True)
     start_time = models.TimeField(auto_now_add=False)
-    end_time = models.TimeField(auto_now_add=False)
+    duration = models.IntegerField(choices=Duration.choices, default=Duration.SHORT, verbose_name="Duration", blank=True, null=True)
     procedure = models.ManyToManyField("Procedure", related_name="booking_procedure")
     comments = models.TextField(blank=True)
     
     def __str__(self):
-        return f"{self.vet_bookings.all()[0].name} + {self.day} + {self.start_time}"
+        return f"{self.title} + {self.day} + {self.start_time}"
 
 class Pet(models.Model):
     name = models.TextField(blank=True)

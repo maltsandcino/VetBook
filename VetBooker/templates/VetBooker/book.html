@@ -45,10 +45,10 @@
         <label for="durationSelector">Duration:</label>
         <p id="duration">
             <select name="durationSelector" id="durationSelector">
-                <option value="15">Consulatation: 15 Minutes</option>
-                <option value="30">Examination: 30 Minutes</option>
-                <option value="60">Small Procedure: 60 Minutes</option>
-                <option value="120">Complex Procedure: 120 Minutes</option>               
+                <option value="0">Consulatation: 15 Minutes</option>
+                <option value="1">Examination: 30 Minutes</option>
+                <option value="2">Small Procedure: 60 Minutes</option>
+                <option value="3">Complex Procedure: 120 Minutes</option>               
             </select></p>
     </div>
     <div class="flex-spaced-between">
@@ -56,5 +56,5 @@
     </div>
 </div>
 <div id="doctorList" class="flexGallery"></div>
-<div class="appointmentList"></div>
+<div class="appointmentList" id="appointmentList"></div>
 {% endblock %}

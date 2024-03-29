@@ -34,23 +34,28 @@ def get_doctors(request):
         else:
             return JsonResponse({"vet_list": vet_list}, status=200)
 
+
+###TODO: Should probably alter below to ensure that no appointments can be made on sundays
+        #datetime.weekday() might be helpful
+        ## I could set the timedelta to 9 days, then determine where in the list sat/sun are, then cut them out of the list to ensure we still have a 5 day overview.
+        
 def get_avails(request):
     if request.method == "POST":
         ###Looking to see what appointments already exist in the coming week
         today = date.today()
-        week_in_future = today + timedelta(days=6)
+        week_in_future = today + timedelta(days=9)
      
         data = json.loads(request.body)
         vet_ID = data.get("doctorID", "")
         vet = Vet.objects.get(id=vet_ID)
-        ###We need to know the length of the duration of the appointment in order to properly find available slots
+        ###We need to know the length of the duration of the appointment in order to properly find available slots. Filtering between today and LESS than 1 week in the future
         duration = int(data.get("duration", ""))      
-        planned_bookings = Booking.objects.filter(vet=vet).filter(day__gte=today).filter(day__lt=week_in_future)
+        planned_bookings = Booking.objects.filter(vet=vet).filter(day__gte=today).filter(day__lte=week_in_future)
         bookings = []
         for b in planned_bookings:
             bookings.append(b)
         
-        ###Put all possible times into a list and into a dict
+        ###Put all possible times into a list and into a dict, plus a dict for names of days
         all_time_slots = list()
         morning_hours = ["09"] + [str(h) for h in range(10,12)]
         evening_hours = ["12"] + [str(h) for h in range(13, 17)]
@@ -63,10 +68,13 @@ def get_avails(request):
                 all_time_slots.append(h+":"+m)
         
         week_slots = {}
-        
-        for i in range(7):
-            today = today + timedelta(days=i)
-            week_slots[str(today)] = all_time_slots[:]
+        day_names = list(calendar.day_abbr)
+        new_keys = []
+        for i in range(8):
+            current_day = today + timedelta(days=i)
+            if date.weekday(current_day) != 6:
+                week_slots[str(current_day)] = all_time_slots[:]
+                new_keys.append(f"{day_names[date.weekday(current_day)]}, {str(current_day)[8:10]}-{str(current_day)[5:7]}-{str(current_day)[0:4]}")
         
         ###Remove times at ends of day for durations that take more than 15 minutes:
         
@@ -106,9 +114,11 @@ def get_avails(request):
                                 week_slots[day] = week_slots[day][0:index - j] + week_slots[day][index + 8:]
                             except:
                                 week_slots[day] = week_slots[day][0:index - j]
-
+        updated_week_slots = {}
+        for i, key in enumerate(week_slots):
+            updated_week_slots[new_keys[i]] = week_slots[key]
         
-        return JsonResponse(week_slots, status=200)
+        return JsonResponse(updated_week_slots, status=200, safe=False)
     return JsonResponse({"message":"More information is necessary for this path"}, status=200)
 
 def login_view(request):

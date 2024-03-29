@@ -63,6 +63,7 @@ function appointmentSearch(e){
     doctorID = e.target.dataset.value
     console.log("check")
     duration = document.getElementById("durationSelector").value
+    appointmentDiv = document.getElementById("appointmentList")
     fetch('/getAvailableTimes', {
         method: 'POST',
         headers: {
@@ -84,16 +85,21 @@ function appointmentSearch(e){
     })
     .then(data => {
         if(data){
+            appointmentDiv.innerHTML = ""
             const objectArray = Object.keys(data);
-            const key_one = objectArray[0]
-
-            const selector = document.createElement("select")
+            dateValue = objectArray[0]
+            console.log(dateValue)
+            for(key of objectArray){
+                const selector = document.createElement("select")
+                selector.innerHTML = selector.innerHTML + `<option disabled selected>${key}</option>`
             
-            for (value of data[key_one]){
-                selector.innerHTML = selector.innerHTML + `<option>${key_one}: ${value}</option>`
-            }
-            document.getElementById("appointmentList").innerHTML = `<select>${selector.innerHTML}</select>`
+                for (value of data[key]){
+                    selector.innerHTML = selector.innerHTML + `<option>${value}</option>`
+                }
+                
+                appointmentDiv.innerHTML = appointmentDiv.innerHTML + `<div class='flex-column'><select data-value="${doctorID}" data-paginator="${dateValue}">${selector.innerHTML}</select><button>Submit</button></div>`
             // console.log(data)
+            }
         }
         else {
         // let vetDiv = document.getElementById("doctorList");
@@ -407,24 +413,3 @@ function editUser(data, field) {
     
 }
 
-function submitBooking() {
-  
-    let data_body = document.querySelector(`#Pet Name${id}`).value;
-    
-    fetch('/book', {
-        method: 'POST',
-        body: JSON.stringify({
-            body: data_body,
-            post: postid
-        })
-    })
-    .then(response => {
-        if(response.ok) {
-            
-             return response.json();
-        }
-         else {
-             alert("Please choose a different appointment date");
-         }
-    })
-}

@@ -19,14 +19,15 @@ class Vet(models.Model):
 
         bookings = Booking.objects.filter(vet=self)
         booking_list = []
-        for booking in bookings:
-            booking_list.append({'pet name': booking.Pet, 'day': booking.day, 'start time': booking.start_time, 'end time': booking.end_time, 'procedure': booking.procedure})
+        if bookings:
+            for booking in bookings:
+                booking_list.append({'pet name': booking.Pet, 'day': booking.day, 'start time': booking.start_time, 'procedure': booking.procedure})
 
         return {
             "id": self.id,
             "name": self.name,
             "priority_skills": self.priority_skills,
-            "general_availibility": self.general_availibility,
+            "general_availibility": self.general_availibility.all()[0][Shift],
             "bookings": booking_list,
             # "bookings": self.bookings,
         }

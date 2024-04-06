@@ -47,7 +47,10 @@ def get_avails(request):
      
         data = json.loads(request.body)
         vet_ID = data.get("doctorID", "")
+        ##Access vet and their shift
         vet = Vet.objects.get(id=vet_ID)
+        shift = vet.general_availibility.all()[0]
+        
         ###We need to know the length of the duration of the appointment in order to properly find available slots. Filtering between today and LESS than 1 week in the future
         duration = int(data.get("duration", ""))      
         planned_bookings = Booking.objects.filter(vet=vet).filter(day__gte=today).filter(day__lte=week_in_future)
@@ -55,17 +58,26 @@ def get_avails(request):
         for b in planned_bookings:
             bookings.append(b)
         
+        
+            
         ###Put all possible times into a list and into a dict, plus a dict for names of days
         all_time_slots = list()
-        morning_hours = ["09"] + [str(h) for h in range(10,12)]
-        evening_hours = ["12"] + [str(h) for h in range(13, 17)]
+        morning_hours = []
+        evening_hours = []
+        ###Determine if appointments can be made in morning or evening based on shift
+        if shift.name == "Morning":
+            morning_hours = ["09"] + [str(h) for h in range(10,12)]
+            evening_hours = ["12"] + [str(h) for h in range(13, 17)]
+        if shift.name == "Afternoon":
+            morning_hours = ["12"] + [str(h) for h in range(12,12)]
+            evening_hours = ["12"] + [str(h) for h in range(13, 20)]
         minutes = ["00", "15", "30", "45"]
         for h in morning_hours:
             for m in minutes:
                 all_time_slots.append(h+":"+m)
-        for h in evening_hours:
-            for m in minutes:
-                all_time_slots.append(h+":"+m)
+            for h in evening_hours:
+                for m in minutes:
+                    all_time_slots.append(h+":"+m)
         
         week_slots = {}
         day_names = list(calendar.day_abbr)

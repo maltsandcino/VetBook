@@ -3,9 +3,29 @@ document.addEventListener('DOMContentLoaded', () =>{
     if (document.getElementById("medicalDomainSelect")){
     document.getElementById("medicalDomainSelect").addEventListener('click', () => {doctorSelect()})
     ;}
+    if (document.getElementById("customDay")){
+        document.getElementById("customDay").addEventListener('click', () => {customDoctorSelect()})
+    }
 })
 
+function paginate(){
+//to do: grab date from last box, queue from server for dates forwand and backward
+//to do: ensure that there is a (hidden) area holding doctor ID and procedure length in the other function in order to ensure I have the correct ID and length to pass to backend
+//to do: eventually use some css styling and JS to ensure that the selected doctor div is highlighted so users are positive which dr they are booking for
+}
+
+function customDoctorSelect() {
+    //to do: finish this similarly to how previously implemented, but to save space maybe use a drop-down menu instead of divs.
+    if (!document.getElementById("doctorList").classList.contains("notVisible")){
+    document.getElementById("doctorList").classList.toggle("notVisible")
+    document.getElementById("appointmentList").classList.toggle("notVisible")}
+}
+
 function doctorSelect() {
+    if (document.getElementById("doctorList").classList.contains("notVisible")){
+        // document.getElementById("doctorList").classList.toggle("notVisible")}
+    }
+
     let medicine = document.getElementById("medicalDomainSelector").value
     
     fetch('/doctorSearch', {
@@ -30,8 +50,7 @@ function doctorSelect() {
         }
     })
     .then(data => {
-        if(data){
-            
+        if(data){            
             document.getElementById("doctorList").remove();
             let sibDiv = document.getElementById("appointmentList");
             let vDiv = document.createElement('div');
@@ -60,8 +79,15 @@ function doctorSelect() {
 }
 
 function appointmentSearch(e){
+
+    if (document.getElementById("appointmentList").classList.contains("notVisible")){
+        document.getElementById("appointmentList").classList.toggle("notVisible")}
+   
     doctorID = e.target.dataset.value
-    console.log("check")
+    if (!doctorID){
+        return false
+    }
+    
     duration = document.getElementById("durationSelector").value
     appointmentDiv = document.getElementById("appointmentList")
     fetch('/getAvailableTimes', {
@@ -88,7 +114,7 @@ function appointmentSearch(e){
             appointmentDiv.innerHTML = ""
             const objectArray = Object.keys(data);
             dateValue = objectArray[0]
-            console.log(dateValue)
+            
             for(key of objectArray){
                 const selector = document.createElement("select")
                 selector.innerHTML = selector.innerHTML + `<option disabled selected>${key}</option>`
@@ -104,7 +130,13 @@ function appointmentSearch(e){
         else {
         // let vetDiv = document.getElementById("doctorList");
         // vetDiv.innerHTML = "We do not have a doctor practising with that speciality";
-        }})
+        }
+        pDiv = document.getElementById("paginationDiv")
+        pDiv = document.getElementById("paginationDiv")
+        if (pDiv.classList.contains("notVisible")){
+            pDiv.classList.toggle("notVisible")
+        }}
+        )
     
 }
 

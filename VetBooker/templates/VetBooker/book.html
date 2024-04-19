@@ -57,5 +57,26 @@
 </div>
 <div id="doctorList" class="flexGallery"></div>
 <div class="appointmentList flexGallery" id="appointmentList"></div>
-<div id="paginationDiv" class="flex-row flexGallery"><div class="left"><label style="display: inline; margin-right: 10px;" for="customInput">Custom Date</label><input style="display: inline; margin-right: 10px;" type="date" name="customInput" id="customInput"><button id="customDay">Check Availability</button></div><div class="Right">Previous | Next</div>
+<div id="paginationDiv" class="flex-column flexGallery notVisible"><div class="Top" style="text-align: right; margin-right: 10px;">Previous | Next</div><div class="Bottom flex-row"><label style="display: inline; margin-right: 10px;" for="customInput">Custom Date</label><input style="display: inline; margin-right: 10px;" type="date" name="customInput" id="customInput">
+    
+    <label style="display: inline; margin-right: 10px;" for="customMedicalDomainSelector">Speciality:</label>
+        <select style="display: inline; margin-right: 10px;" name="customMedicalDomainSelector" id="customMedicalDomainSelector">
+            <option value="General">General</option>
+            <option value="Cardiology">Cardiology</option>
+            <option value="Dermatology">Dermatology</option>
+            <option value="Internal Medicine">Internal Medicine</option>
+            <option value="Ophthamology">Ophthamology</option>
+            <option value="Neurology">Neurology</option>
+            <option value="Oncology">Oncology</option>
+            <option value="Urology">Urology</option>
+            <option value="Rheumatology">Rheumatology</option>                
+        </select>
+        <label style="display: inline; margin-right: 10px;" for="customDurationSelector">Duration:</label>
+            <select style="display: inline; margin-right: 10px;" name="customDurationSelector" id="customDurationSelector">
+                <option value="0">Consulatation: 15 Minutes</option>
+                <option value="1">Examination: 30 Minutes</option>
+                <option value="2">Small Procedure: 60 Minutes</option>
+                <option value="3">Complex Procedure: 120 Minutes</option>               
+            </select>
+        <button style="display: inline; margin-right: 10px;" id="customDay">Check Availability</button></div></div>
 {% endblock %}

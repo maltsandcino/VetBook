@@ -105,6 +105,7 @@
 
 .notVisible {
     visibility: hidden;
+    display: none;
 }
 
 .visible {

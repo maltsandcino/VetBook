@@ -62,22 +62,20 @@ def get_avails(request):
             
         ###Put all possible times into a list and into a dict, plus a dict for names of days
         all_time_slots = list()
-        morning_hours = []
-        evening_hours = []
+        all_hours = []
+       
         ###Determine if appointments can be made in morning or evening based on shift
         if shift.name == "Morning":
-            morning_hours = ["09"] + [str(h) for h in range(10,12)]
-            evening_hours = ["12"] + [str(h) for h in range(13, 17)]
+            all_hours = ["09"] + [str(h) for h in range(10,17)]
+            
         if shift.name == "Afternoon":
-            morning_hours = ["12"] + [str(h) for h in range(12,12)]
-            evening_hours = ["12"] + [str(h) for h in range(13, 20)]
+            all_hours = ["12"] + [str(h) for h in range(13,20)]
+           
         minutes = ["00", "15", "30", "45"]
-        for h in morning_hours:
+        
+        for h in all_hours:
             for m in minutes:
                 all_time_slots.append(h+":"+m)
-            for h in evening_hours:
-                for m in minutes:
-                    all_time_slots.append(h+":"+m)
         
         week_slots = {}
         day_names = list(calendar.day_abbr)
@@ -92,11 +90,12 @@ def get_avails(request):
         
         for key in week_slots:
             if duration == 1:
-                week_slots[key] = week_slots[key][0:31]
+                week_slots[key] = week_slots[key][0:35]
             if duration == 2:
-                week_slots[key] = week_slots[key][0:29]
+                week_slots[key] = week_slots[key][0:33]
             if duration == 3:
-                week_slots[key] = week_slots[key][0:25]
+                week_slots[key] = week_slots[key][0:29]
+        
      
         ###Remove times that dont fit. This bit is cumbersome
         ITERATION_LIST = [0, 1, 3, 7]

@@ -8,23 +8,96 @@ document.addEventListener('DOMContentLoaded', () =>{
     }
 })
 
-function paginate(){
+function paginate(direction){
+    if(direction === "right"){
+        end = document.getElementById("date_6")
+        doctor = end.dataset.value
+        day = end.dataset.paginator
+        console.log(day)
+        console.log(doctor)
+        appointmentSearch(doctor, day)
+    }
+    if(direction === "left"){
+        end = document.getElementById("date_0")
+        doctor = end.dataset.value
+        day = end.dataset.paginator
+        console.log(day)
+        console.log(doctor)
+        appointmentSearch(doctor, day, "left")
+    }
 //to do: grab date from last box, queue from server for dates forwand and backward
 //to do: ensure that there is a (hidden) area holding doctor ID and procedure length in the other function in order to ensure I have the correct ID and length to pass to backend
 //to do: eventually use some css styling and JS to ensure that the selected doctor div is highlighted so users are positive which dr they are booking for
 }
 
 function customDoctorSelect() {
-    //to do: finish this similarly to how previously implemented, but to save space maybe use a drop-down menu instead of divs.
+    
     if (!document.getElementById("doctorList").classList.contains("notVisible")){
     document.getElementById("doctorList").classList.toggle("notVisible")
+    document.getElementById("appointmentList").innerHTML = ""
     document.getElementById("appointmentList").classList.toggle("notVisible")}
+    
+    date = document.getElementById("customInput").value
+    vet = document.getElementById("customMedicalDomainSelector").value
+    length = document.getElementById("customDurationSelector").value
+    customDiv = document.getElementById("customAppointment")
+
+    fetch('/customTimes', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': `${document.cookie.split('=').pop()}` // Include the CSRF token in the header
+        },
+        body: JSON.stringify({
+            doctorID: vet,
+            duration: length,
+            day: date
+        })
+    })
+    .then(response =>{
+        if(response.ok) {
+            
+            return response.json();
+        }
+        else {
+            alert("Clinic is closed on Sundays, please choose a different day for your appointment.")
+            //This could be turned into a div or other message to warn the user instead of an alert.
+        }
+    })
+    .then(data => {
+        if(data){
+            document.getElementById("customAppointment").classList.toggle("notVisible")
+            customDiv.innerHTML = ""
+            const objectArray = Object.keys(data);
+            dateValue = objectArray[0]
+            
+            for(key of objectArray){
+                const selector = document.createElement("select")
+                selector.innerHTML = selector.innerHTML + `<option disabled selected>${key}</option>`
+            
+                for (value of data[key]){
+                    selector.innerHTML = selector.innerHTML + `<option>${value}</option>`
+                }
+                
+                customDiv.innerHTML = customDiv.innerHTML + `<div class='flex-column'><select data-value="${vet}" data-paginator="${dateValue}">${selector.innerHTML}</select><button id="customSubmit">Submit</button></div>`
+            // console.log(data)
+            }
+        }
+        else {
+        // let vetDiv = document.getElementById("doctorList");
+        // vetDiv.innerHTML = "We do not have a doctor practising with that speciality";
+        }
+        }
+        )
+    
 }
 
 function doctorSelect() {
     if (document.getElementById("doctorList").classList.contains("notVisible")){
         // document.getElementById("doctorList").classList.toggle("notVisible")}
     }
+
+    document.getElementById("customAppointment").classList.toggle("notVisible")
 
     let medicine = document.getElementById("medicalDomainSelector").value
     
@@ -62,7 +135,7 @@ function doctorSelect() {
             const vetInfo = data.vet_list.map((vet) => `<div class="vetSelector" data-value=${vet.id}>${vet.vet}</div>`);
             vetDiv.innerHTML += vetInfo.join('');
 
-            const appointmentSearchHandler = (event) => { appointmentSearch(event) };
+            const appointmentSearchHandler = (event) => { appointmentSearch(event.target.dataset.value) };
 
             // Remove existing click event listener (if any)
             vetDiv.removeEventListener('click', appointmentSearchHandler);
@@ -78,12 +151,12 @@ function doctorSelect() {
 })
 }
 
-function appointmentSearch(e){
+function appointmentSearch(e, customDay, direction){
 
     if (document.getElementById("appointmentList").classList.contains("notVisible")){
         document.getElementById("appointmentList").classList.toggle("notVisible")}
-   
-    doctorID = e.target.dataset.value
+    
+    doctorID = e
     if (!doctorID){
         return false
     }
@@ -98,7 +171,9 @@ function appointmentSearch(e){
         },
         body: JSON.stringify({
             doctorID: doctorID,
-            duration: duration
+            duration: duration,
+            date: customDay,
+            direction: direction
         })
     })
     .then(response =>{
@@ -123,7 +198,7 @@ function appointmentSearch(e){
                     selector.innerHTML = selector.innerHTML + `<option>${value}</option>`
                 }
                 
-                appointmentDiv.innerHTML = appointmentDiv.innerHTML + `<div class='flex-column'><select data-value="${doctorID}" data-paginator="${dateValue}">${selector.innerHTML}</select><button>Submit</button></div>`
+                appointmentDiv.innerHTML = appointmentDiv.innerHTML + `<div class='flex-column'><select id="date_${objectArray.indexOf(key)}" data-value="${doctorID}" data-paginator="${key}">${selector.innerHTML}</select><button>Submit</button></div>`
             // console.log(data)
             }
         }

@@ -6,7 +6,72 @@ document.addEventListener('DOMContentLoaded', () =>{
     if (document.getElementById("customDay")){
         document.getElementById("customDay").addEventListener('click', () => {customDoctorSelect()})
     }
+    if (document.getElementById("selectClient")){
+        document.getElementById("selectClient").addEventListener('click', () => {bookingClient()});
+        document.getElementById('bookingPhonenumber').addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+              bookingClient();
+            }
+        })
+    }
 })
+
+
+//To do: Try to use an await function instead of then statements in fetching data
+
+//Template:
+
+// const userData = {
+//     name: 'John Doe',
+//     email: 'john@example.com',
+// };
+// const apiUrl = 'https://api.example.com/users';
+// const response = await fetch(apiUrl, {
+//     method: 'POST',
+//     headers: {
+//         'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(userData),
+// });
+// const result = await response.json();
+
+function bookingClient() {
+    let clientTel = document.getElementById("bookingPhonenumber").value.replace(/\s/g, '')  
+
+    fetch('/clientsearch', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': `${document.cookie.split('=').pop()}` // Include the CSRF token in the header
+        },
+        body: JSON.stringify({
+            number: clientTel
+        })
+    })
+    .then(response =>{
+        if(response.ok) {
+            
+            return response.json();
+        }
+        else {
+            alert("Customer not found, please review telephone number.");
+            return { then: function() {} }
+        }
+    })
+    .then(data => {
+        console.log(data)
+        let petSelector = document.getElementById('petSelect');
+        petSelector.innerHTML = ""
+        const petInfo = data.pets.map((pet) => `<option data-pet="${pet.id}" data-owner="${data.id}">${pet.name}: ${pet.species} </option>`);
+        console.log(petInfo)
+        petSelector.innerHTML += petInfo.join('');
+        petSelector.dataset.owner = data.id
+        document.getElementById('customerName').innerHTML = `${data.name}`
+        //
+        document.getElementById('petSelect').value.split(':')[0]
+    })
+
+}
 
 function paginate(direction){
     if(direction === "right"){
@@ -241,7 +306,7 @@ function manageCustomerSearch(args) {
         document.getElementById("managePets").innerHTML = `<button id="addExisting">Add Existing Pets</button><button id="createNew">Add New Pet</Button>`
         
     }
-    let clientNumber = document.getElementById('numberSearch').value;
+    let clientNumber = document.getElementById('numberSearch').value.replace(/\s/g, '');
     
     if (args) {
         clientNumber = args

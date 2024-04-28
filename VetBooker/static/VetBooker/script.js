@@ -1,4 +1,4 @@
-// Fetch data for booking, to see what the soonest availability is based on specialization. This data will be drawn from the django form.
+
 document.addEventListener('DOMContentLoaded', () =>{
     if (document.getElementById("medicalDomainSelect")){
     document.getElementById("medicalDomainSelect").addEventListener('click', () => {doctorSelect()})
@@ -35,8 +35,51 @@ document.addEventListener('DOMContentLoaded', () =>{
 // });
 // const result = await response.json();
 
+function test(parameter){
+    console.log(parameter.dataset.value)
+    console.log(parameter.id)
+}
+
+async function submitBooking(clicked){
+    let position = clicked.dataset.value
+    let date = clicked.id
+    let doctor = document.getElementById(`date_${position}`).dataset.value
+    let clientTel = document.getElementById("bookingPhonenumber").value.replace(/\s/g, '') 
+    let note = document.getElementById("clientNotes").value
+    let length = document.getElementById("durationSelector").value
+    let day = clicked.value
+    let petSelect = document.getElementById("petSelect")
+    let petOption = petSelect.options[petSelect.selectedIndex]
+    let pet = petOption.dataset.pet
+    let response = await fetch('/addappointment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': `${document.cookie.split('=').pop()}`
+        },
+        body: JSON.stringify({
+            number: clientTel,
+            doctorID: doctor,
+            date: day,
+            notes: note,
+            petID: pet,
+            duration: length
+        })
+    });
+    try {const result = await response.json();
+    console.log(result)}
+    catch (error) {
+        console.log("Error")
+    }
+}
+function enableSearch() {
+    document.getElementById("bookingPhonenumber").disabled = false;
+    document.getElementById("bookingPhonenumber").value = "";
+    document.getElementById("bookingPhonenumber").focus()
+}
+
 function bookingClient() {
-    let clientTel = document.getElementById("bookingPhonenumber").value.replace(/\s/g, '')  
+    let clientTel = document.getElementById("bookingPhonenumber").value.replace(/\s/g, '')
 
     fetch('/clientsearch', {
         method: 'POST',
@@ -59,6 +102,7 @@ function bookingClient() {
         }
     })
     .then(data => {
+        document.getElementById("bookingPhonenumber").disabled = true;
         console.log(data)
         let petSelector = document.getElementById('petSelect');
         petSelector.innerHTML = ""
@@ -204,6 +248,7 @@ function doctorSelect() {
 
             // Remove existing click event listener (if any)
             vetDiv.removeEventListener('click', appointmentSearchHandler);
+            
 
             // Add the updated click event listener
             vetDiv.addEventListener('click', appointmentSearchHandler);
@@ -215,6 +260,16 @@ function doctorSelect() {
         
 })
 }
+//TODO: Add more validation here
+function submissionHandler(event){
+    if (event.target.type == "submit"){
+        console.log("attempt to submit booking"); 
+        submitBooking(event.target);
+        }
+    else {
+        console.log("incorrect target");
+        return false}
+        }
 
 function appointmentSearch(e, customDay, direction){
 
@@ -228,7 +283,7 @@ function appointmentSearch(e, customDay, direction){
     
     duration = document.getElementById("durationSelector").value
     appointmentDiv = document.getElementById("appointmentList")
-    fetch('/getAvailableTimes', {
+        fetch('/getAvailableTimes', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -263,9 +318,12 @@ function appointmentSearch(e, customDay, direction){
                     selector.innerHTML = selector.innerHTML + `<option>${value}</option>`
                 }
                 
-                appointmentDiv.innerHTML = appointmentDiv.innerHTML + `<div class='flex-column'><select id="date_${objectArray.indexOf(key)}" data-value="${doctorID}" data-paginator="${key}">${selector.innerHTML}</select><button>Submit</button></div>`
+                appointmentDiv.innerHTML = appointmentDiv.innerHTML + `<div class='flex-column'><select id="date_${objectArray.indexOf(key)}" data-value="${doctorID}" data-paginator="${key}">${selector.innerHTML}</select><button id="${key}" data-value="${objectArray.indexOf(key)}">Submit</button></div>`
             // console.log(data)
             }
+
+            appointmentDiv.removeEventListener('click', submissionHandler);
+            appointmentDiv.addEventListener('click', submissionHandler);
         }
         else {
         // let vetDiv = document.getElementById("doctorList");

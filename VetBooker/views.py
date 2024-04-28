@@ -127,9 +127,16 @@ def custom_times(request):
             updated_week_slots[new_keys[i]] = week_slots[key]
         
         return JsonResponse(updated_week_slots, status=200, safe=False)
+    return JsonResponse({"message":"More information is necessary for this path"}, status=400)
+    pass
+
+
+##TO DO
+def add_booking(request):
+    print("add booking")
     return JsonResponse({"message":"More information is necessary for this path"}, status=200)
     pass
-        
+
 def get_avails(request):
     if request.method == "POST":
         ###Looking to see what appointments already exist in the coming week    
@@ -151,9 +158,17 @@ def get_avails(request):
             date_format = "%Y-%m-%d"
             custom_date = custom_date[11:] + "-" + custom_date[8:10] + "-" + custom_date[5:7]
             today = datetime.strptime(custom_date, date_format)
+        
 
-
-        week_in_future = today + timedelta(days=9)
+        if date.weekday(today) == 6:
+            week_in_future = today + timedelta(days=10)
+            print(week_in_future)
+            DAY_CONSTANT = 9
+        else:
+            week_in_future = today + timedelta(days=9)
+            DAY_CONSTANT = 8
+        
+        
 
         if direction == "left":
             print(direction)
@@ -189,7 +204,7 @@ def get_avails(request):
         week_slots = {}
         day_names = list(calendar.day_abbr)
         new_keys = []
-        for i in range(8):
+        for i in range(DAY_CONSTANT):
             current_day = today + timedelta(days=i)
             if date.weekday(current_day) != 6:
                 week_slots[str(current_day)] = all_time_slots[:]

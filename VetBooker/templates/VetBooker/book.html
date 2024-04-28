@@ -10,9 +10,9 @@
         <input type="text" placeholder="0480 12 34 56" id="bookingPhonenumber">
     </div>
     <br>
-    <div class="flex-spaced-between">
-        
+    <div class="flex-end">
         <button class="marginsAuto" id="selectClient">Select Client</button>
+        <button class="marginsAuto" id="reselectClient" onclick="enableSearch()">Reset</button>
     </div>
 </div>
 <br>
@@ -27,13 +27,17 @@
         <p id="petChoice" name="petChoice"><select id="petSelect" name="petSelect"><option disabled selected>Pet Name</option></select></p>
     </div>
     <div class="flex-spaced-between">
+        <label for="petSelect">Notes:</label>
+        <textarea class="wideArea" id="clientNotes"></textarea>
+    </div>
+    <div class="flex-spaced-between">
         <label for="medicalDomainSelector">Speciality:</label>
         <p id="medicalDomain">
             <select name="medicalDomainSelector" id="medicalDomainSelector">
                 <option value="General">General</option>
                 <option value="Cardiology">Cardiology</option>
                 <option value="Dermatology">Dermatology</option>
-                <option value="Internal Medicine">Internal Medicine</option>
+                <option value="Internal Medicine">Internal Med.</option>
                 <option value="Ophthamology">Ophthamology</option>
                 <option value="Neurology">Neurology</option>
                 <option value="Oncology">Oncology</option>
@@ -45,10 +49,10 @@
         <label for="durationSelector">Duration:</label>
         <p id="duration">
             <select name="durationSelector" id="durationSelector">
-                <option value="0">Consulatation: 15 Minutes</option>
-                <option value="1">Examination: 30 Minutes</option>
-                <option value="2">Small Procedure: 60 Minutes</option>
-                <option value="3">Complex Procedure: 120 Minutes</option>               
+                <option value="0">Consult: 15 Min.</option>
+                <option value="1">Exam: 30 Min.</option>
+                <option value="2">Small Op.: 1 hr.</option>
+                <option value="3">Complex: 2 hr.</option>               
             </select></p>
     </div>
     <div class="flex-spaced-between">

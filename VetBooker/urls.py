@@ -20,5 +20,6 @@ urlpatterns = [
     path("addOwner", views.add_owner, name="add_owner"),
     path("doctorSearch", views.get_doctors, name="get_doctors"),
     path("getAvailableTimes", views.get_avails, name="get_avails"),
-    path("customTimes", views.custom_times, name="custom_times"),   
+    path("customTimes", views.custom_times, name="custom_times"),
+    path("addappointment", views.add_booking, name="add_booking"),   
 ]

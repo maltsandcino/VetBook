@@ -78,4 +78,36 @@
             </select>
         <button style="display: inline; margin-right: 10px;" id="customDay">Check Availability</button></div>
     <div class="Bottom flex-row" id="customAppointment"></div>
+    
+    </div>
+    <!--The below needs to be formated to not look really bad. Also setting class for now to not visible so I Don't forget.-->
+    <div class="Modal notVisible" id="confirmationModal">
+        <div class="flex-column">
+            <div><h2 class="modal-title" id="modalTitle"></h2></div>
+            <div class="flex-row">
+                <div class="flex-column modal-categories">
+                    <p>Pet:</p>
+                    <p>Doctor:</p>
+                    <p>Day:</p>
+                    <p>Time:</p>
+                    <p>Duration:</p>
+                    <p>Note:</p>
+                </div>
+                <div class="flex-column modal-information">
+                    <p>Sample</p>
+                    <p>Sample</p>
+                    <p>Sample</p>
+                    <p>Sample</p>
+                    <p>Sample</p>
+                    <p class="modal-notes">Lorem Ipsem la de da</p>
+                </div>
+                <div class="confirmation">
+                    <button id="confirm">Confirm</button>
+                    <button id="reject">Reject</button>
+                </div>
+            </div>
+           
+            
+
+        </div>
 {% endblock %}

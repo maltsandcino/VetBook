@@ -16,30 +16,12 @@ document.addEventListener('DOMContentLoaded', () =>{
     }
 })
 
-
-//To do: Try to use an await function instead of then statements in fetching data
-
-//Template:
-
-// const userData = {
-//     name: 'John Doe',
-//     email: 'john@example.com',
-// };
-// const apiUrl = 'https://api.example.com/users';
-// const response = await fetch(apiUrl, {
-//     method: 'POST',
-//     headers: {
-//         'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify(userData),
-// });
-// const result = await response.json();
-
 function test(parameter){
     console.log(parameter.dataset.value)
     console.log(parameter.id)
 }
 
+//TODO: Refactor below with more parameters from the Modal Div function, will pass the information directly from Modal Function no need to find it all from scratch here.
 async function submitBooking(clicked){
     let position = clicked.dataset.value
     let date = clicked.id
@@ -72,6 +54,35 @@ async function submitBooking(clicked){
         console.log("Error")
     }
 }
+
+//Todo: Place information into the <p> Elements, add event listener + helper function to add and remove event listener from buttons, also make div visible and not visible here.
+//Todo: Complete validation of selected TIME, if it's not numeric (i.e. they havent chosen a time, its the default (and disabled) date) then this needs to trigger some kind of warning on the page
+function confirmationDiv(clicked){
+
+    let position = clicked.dataset.value;
+    let date = clicked.id;
+    let doctor = document.getElementById(`date_${position}`).dataset.value;
+    let clientTel = document.getElementById("bookingPhonenumber").value.replace(/\s/g, '');
+    let note = document.getElementById("clientNotes").value;
+    let length = document.getElementById("durationSelector").value;
+    let time = document.getElementById(`date_${position}`).value;
+    let petSelect = document.getElementById("petSelect");
+    let petOption = petSelect.options[petSelect.selectedIndex];
+    let pet = petOption.dataset.pet;
+
+    if(isNaN(time[0])){
+        console.log("not a number")
+    }
+    console.log(time)
+    console.log(date)
+
+    let modalDiv = document.getElementById("confirmationModal")
+    modalDiv.innerHTML = ``
+    console.log(petOption.value.split(":")[0]);
+
+}
+
+
 function enableSearch() {
     document.getElementById("bookingPhonenumber").disabled = false;
     document.getElementById("bookingPhonenumber").value = "";
@@ -264,7 +275,7 @@ function doctorSelect() {
 function submissionHandler(event){
     if (event.target.type == "submit"){
         console.log("attempt to submit booking"); 
-        submitBooking(event.target);
+        confirmationDiv(event.target);
         }
     else {
         console.log("incorrect target");

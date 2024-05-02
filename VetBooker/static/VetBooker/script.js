@@ -16,10 +16,6 @@ document.addEventListener('DOMContentLoaded', () =>{
     }
 })
 
-function test(parameter){
-    console.log(parameter.dataset.value)
-    console.log(parameter.id)
-}
 
 //TODO: Refactor below with more parameters from the Modal Div function, will pass the information directly from Modal Function no need to find it all from scratch here.
 async function submitBooking(clicked){
@@ -88,7 +84,8 @@ function confirmationDiv(clicked){
     }
 
     if(isNaN(time[0])){
-        console.log("not a number")
+        alert("Please select a valid timeslot.")
+        return false
     }
     
     let bg = document.getElementById("bg")
@@ -111,7 +108,7 @@ function confirmationDiv(clicked){
     modalNote.innerHTML = `${note}`
     
     modalDiv.classList.toggle("notVisible")
-    console.log();
+    
 
 }
 
@@ -127,6 +124,23 @@ function enableSearch() {
     document.getElementById("bookingPhonenumber").disabled = false;
     document.getElementById("bookingPhonenumber").value = "";
     document.getElementById("bookingPhonenumber").focus()
+    let clientDiv = document.getElementById('clientInformation')
+    let paginationDiv = document.getElementById('paginationDiv')
+    let doctorDiv = document.getElementById('doctorList')
+    let appList = document.getElementById('appointmentList')
+            
+    if (!clientDiv.classList.contains("notVisible")){
+        clientDiv.classList.toggle("notVisible")
+    }
+    if (!paginationDiv.classList.toggle("notVisible")){
+        paginationDiv.classList.toggle("notVisible")
+    }
+    if (!doctorDiv.classList.toggle("notVisible")){
+        doctorDiv.classList.toggle("notVisible")
+    }
+    if (!appList.classList.toggle("notVisible")){
+        appList.classList.toggle("notVisible")   
+    }
 }
 
 function bookingClient() {
@@ -149,21 +163,27 @@ function bookingClient() {
         }
         else {
             alert("Customer not found, please review telephone number.");
+            let clientDiv = document.getElementById('clientInformation')
+            if (!clientDiv.classList.contains("notVisible")){
+                clientDiv.classList.toggle("notVisible")
+            }
             return { then: function() {} }
         }
     })
     .then(data => {
         document.getElementById("bookingPhonenumber").disabled = true;
-        console.log(data)
+      
         let petSelector = document.getElementById('petSelect');
         petSelector.innerHTML = ""
         const petInfo = data.pets.map((pet) => `<option data-pet="${pet.id}" data-owner="${data.id}">${pet.name}: ${pet.species} </option>`);
-        console.log(petInfo)
+        
         petSelector.innerHTML += petInfo.join('');
         petSelector.dataset.owner = data.id
         document.getElementById('customerName').innerHTML = `${data.name}`
         //
         document.getElementById('petSelect').value.split(':')[0]
+        let clientDiv = document.getElementById('clientInformation')
+        clientDiv.classList.toggle("notVisible")
     })
 
 }
@@ -173,16 +193,14 @@ function paginate(direction){
         end = document.getElementById("date_6")
         doctor = end.dataset.value
         day = end.dataset.paginator
-        console.log(day)
-        console.log(doctor)
+        
         appointmentSearch(doctor, day)
     }
     if(direction === "left"){
         end = document.getElementById("date_0")
         doctor = end.dataset.value
         day = end.dataset.paginator
-        console.log(day)
-        console.log(doctor)
+        
         appointmentSearch(doctor, day, "left")
     }
 //to do: grab date from last box, queue from server for dates forwand and backward
@@ -195,7 +213,8 @@ function customDoctorSelect() {
     if (!document.getElementById("doctorList").classList.contains("notVisible")){
     document.getElementById("doctorList").classList.toggle("notVisible")
     document.getElementById("appointmentList").innerHTML = ""
-    document.getElementById("appointmentList").classList.toggle("notVisible")}
+    document.getElementById("appointmentList").classList.toggle("notVisible")
+    document.getElementById("pDiv").classList.toggle("notVisible")}
     
     date = document.getElementById("customInput").value
     vet = document.getElementById("customMedicalDomainSelector").value
@@ -303,6 +322,18 @@ function doctorSelect() {
 
             // Add the updated click event listener
             vetDiv.addEventListener('click', appointmentSearchHandler);
+            // Making sure it is visually obvious which doctor is selected
+            selectorDivs = document.querySelectorAll(".vetSelector");
+            for(element of selectorDivs){
+                element.addEventListener('click', () => {
+                    for(let i = 0; i < selectorDivs.length; i++){
+                        if(selectorDivs[i].classList.contains("selected")){
+                            selectorDivs[i].classList.toggle("selected")
+                        }
+                    }
+                    event.target.classList.toggle("selected")
+                })
+            }
         }
         else {
             let vetDiv = document.getElementById("doctorList");
@@ -311,14 +342,17 @@ function doctorSelect() {
         
 })
 }
+
+
+
 //TODO: Add more validation here
 function submissionHandler(event){
     if (event.target.type == "submit"){
-        console.log("attempt to submit booking"); 
+        
         confirmationDiv(event.target);
         }
     else {
-        console.log("incorrect target");
+        
         return false}
         }
 
@@ -510,7 +544,7 @@ function getExistingPet(data){
     .then(data => {
         // console.log(data.options)
         for (let pet of data.options){
-            console.log(pet.name)
+            
         }
             
         // console.log(data)
@@ -526,12 +560,12 @@ function getExistingPet(data){
     document.getElementById("managePets").append(existingPets);
     
     data.options.forEach(option => {
-        console.log(option.name)
+        
         const object = document.createElement('option');
         object.value = option.id;
         object.textContent = option.name;
         selectList = document.getElementById("petSelect")
-        console.log(selectList)
+        
         selectList.appendChild(object)
    
     });
@@ -573,7 +607,7 @@ function addToOwner(user, pet){
 }
 
 function addNewPet(data){
-    console.log(data)
+    
 }
 
 function remove(petid) {
@@ -609,7 +643,7 @@ function remove(petid) {
 }
 
 function viewBookings(petid){
-    console.log(petid)
+    
 }
 
 function submitUserEdits(id, value, field){

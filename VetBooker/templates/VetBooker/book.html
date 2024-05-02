@@ -17,7 +17,7 @@
 </div>
 <br>
 <!-- Below, the div will appear after the number is searched -->
-<div class="flex-column fortyVW marginsAuto">
+<div id="clientInformation" class="flex-column fortyVW marginsAuto notVisible">
     <div class="flex-spaced-between">
         <p>Client Name:</p>
         <p id="customerName">Client Name</p>
@@ -61,8 +61,8 @@
 </div>
 <div id="doctorList" class="flexGallery"></div>
 <div class="appointmentList flexGallery" id="appointmentList"></div>
-<div id="paginationDiv" class="flex-column flexGallery notVisible"><div class="Top" style="text-align: right; margin-right: 10px;"><a id="previous" onclick="paginate('left')">Previous</a> | <a id="next" onclick="paginate('right')">Next</a></div><div class="Bottom flex-row"><label style="display: inline; margin-right: 10px;" for="customInput">Custom Date</label><input style="display: inline; margin-right: 10px;" type="date" name="customInput" id="customInput">
-    
+<div id="paginationDiv" class="flex-column flexGallery notVisible"><div class="Top" id="pDiv" style="text-align: right; margin-right: 10px;"><a id="previous" onclick="paginate('left')">Previous</a> | <a id="next" onclick="paginate('right')">Next</a></div><div class="Bottom flex-row"><label style="display: inline; margin-right: 10px;" for="customInput">Custom Date</label><input style="display: inline; margin-right: 10px;" type="date" name="customInput" id="customInput">
+    <div class="flex-row">
     <label style="display: inline; margin-right: 10px;" for="customMedicalDomainSelector">Doctor:</label>
         <select style="display: inline; margin-right: 10px;" name="customMedicalDomainSelector" id="customMedicalDomainSelector">
             {% for vet in vetlist %}
@@ -78,7 +78,7 @@
             </select>
         <button style="display: inline; margin-right: 10px;" id="customDay">Check Availability</button></div>
     <div class="Bottom flex-row" id="customAppointment"></div>
-    
+    </div>
     </div>
     <!--The below needs to be formated to not look really bad. Also setting class for now to not visible so I Don't forget.-->
     <div id="bg"></div>

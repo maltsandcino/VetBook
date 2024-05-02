@@ -180,6 +180,12 @@ label {
     backdrop-filter: blur(3px);
 }
 
+#paginationDiv {
+    displaY: flex;
+    flex-wrap: wrap;
+    flex: auto;
+    /* border: 1px solid red; */
+}
 
 .modal {
     
@@ -199,6 +205,15 @@ label {
     width: 100%;
     height: 100%;
     margin: 10px;
+}
+
+.selected{
+    background-color: #191c1f;
+}
+
+.vetSelector:hover {
+    background-color: #5e5e5e
+
 }
 
 .modal-categories {

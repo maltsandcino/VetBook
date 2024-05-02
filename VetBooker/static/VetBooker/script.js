@@ -64,22 +64,62 @@ function confirmationDiv(clicked){
     let doctor = document.getElementById(`date_${position}`).dataset.value;
     let clientTel = document.getElementById("bookingPhonenumber").value.replace(/\s/g, '');
     let note = document.getElementById("clientNotes").value;
-    let length = document.getElementById("durationSelector").value;
+    let lengthValue = parseInt(document.getElementById("durationSelector").value);
     let time = document.getElementById(`date_${position}`).value;
     let petSelect = document.getElementById("petSelect");
     let petOption = petSelect.options[petSelect.selectedIndex];
+    let petName = petOption.value.split(":")[0]
     let pet = petOption.dataset.pet;
+    let length = "NaN"
+
+    switch (lengthValue) {
+        case 0:
+            length = "15 Minutes"
+            break;
+        case 1:
+            length = "30 Minutes"
+            break;
+        case 2:
+            length = "60 Minutes"
+            break;
+        case 3:
+            length = "120 Minutes"
+            break;
+    }
 
     if(isNaN(time[0])){
         console.log("not a number")
     }
-    console.log(time)
-    console.log(date)
-
+    
+    let bg = document.getElementById("bg")
+    bg.classList.toggle("bg")
     let modalDiv = document.getElementById("confirmationModal")
-    modalDiv.innerHTML = ``
-    console.log(petOption.value.split(":")[0]);
+    let modalTitle = document.getElementById("modalTitle")
+    let modalName = document.getElementById("modalPet")
+    let modalDoctor = document.getElementById("modalDoctor")
+    let modalDay = document.getElementById("modalDay")
+    let modalTime = document.getElementById("modalTime")
+    let modalDuration = document.getElementById("modalDuration")
+    let modalNote = document.getElementById("modalNote")
+    
+    modalTitle.innerHTML = `Appointment Confirmation for <i>${petName}</i>`
+    modalName.innerHTML = `${petName}`
+    modalDoctor.innerHTML = `${doctor}`
+    modalDay.innerHTML = `${date}`
+    modalTime.innerHTML = `${time}`
+    modalDuration.innerHTML = `${length}`
+    modalNote.innerHTML = `${note}`
+    
+    modalDiv.classList.toggle("notVisible")
+    console.log();
 
+}
+
+function closeModal() {
+    let bg = document.getElementById("bg")
+    bg.classList.toggle("bg")
+    let modalDiv = document.getElementById("confirmationModal")
+    modalDiv.classList.toggle("notVisible")
 }
 
 

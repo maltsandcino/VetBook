@@ -81,10 +81,12 @@
     
     </div>
     <!--The below needs to be formated to not look really bad. Also setting class for now to not visible so I Don't forget.-->
-    <div class="Modal notVisible" id="confirmationModal">
-        <div class="flex-column">
-            <div><h2 class="modal-title" id="modalTitle"></h2></div>
-            <div class="flex-row">
+    <div id="bg"></div>
+    <div class="modal notVisible flex-column" id="confirmationModal">
+        <div><h2 class="modal-title" id="modalTitle"></h2></div>
+        <div class="container">
+            
+            <div class="flex-row long">
                 <div class="flex-column modal-categories">
                     <p>Pet:</p>
                     <p>Doctor:</p>
@@ -94,20 +96,22 @@
                     <p>Note:</p>
                 </div>
                 <div class="flex-column modal-information">
-                    <p>Sample</p>
-                    <p>Sample</p>
-                    <p>Sample</p>
-                    <p>Sample</p>
-                    <p>Sample</p>
-                    <p class="modal-notes">Lorem Ipsem la de da</p>
+                    <p id="modalPet">Sample</p>
+                    <p id="modalDoctor">Sample</p>
+                    <p id="modalDay">Sample</p>
+                    <p id="modalTime">Sample</p>
+                    <p id="modalDuration">Sample</p>
+                    <p id="modalNote" class="modal-notes">Lorem Ipsem la de da</p>
                 </div>
                 <div class="confirmation">
                     <button id="confirm">Confirm</button>
-                    <button id="reject">Reject</button>
+                    <button id="reject" onclick="closeModal()">Cancel</button>
                 </div>
-            </div>
+        </div>
+    </div>
            
             
 
-        </div>
+        
+
 {% endblock %}

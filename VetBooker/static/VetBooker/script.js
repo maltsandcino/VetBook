@@ -122,12 +122,14 @@ function closeModal() {
 
 function enableSearch() {
     document.getElementById("bookingPhonenumber").disabled = false;
+    document.getElementById("selectClient").disabled = false;
     document.getElementById("bookingPhonenumber").value = "";
     document.getElementById("bookingPhonenumber").focus()
     let clientDiv = document.getElementById('clientInformation')
     let paginationDiv = document.getElementById('paginationDiv')
     let doctorDiv = document.getElementById('doctorList')
     let appList = document.getElementById('appointmentList')
+    let pDiv = document.getElementById('pDiv')
             
     if (!clientDiv.classList.contains("notVisible")){
         clientDiv.classList.toggle("notVisible")
@@ -135,12 +137,18 @@ function enableSearch() {
     if (!paginationDiv.classList.toggle("notVisible")){
         paginationDiv.classList.toggle("notVisible")
     }
-    if (!doctorDiv.classList.toggle("notVisible")){
+    if (!doctorDiv.classList.contains("notVisible")){
         doctorDiv.classList.toggle("notVisible")
     }
-    if (!appList.classList.toggle("notVisible")){
+    if (!appList.classList.contains("notVisible")){
         appList.classList.toggle("notVisible")   
     }
+
+    if (!pDiv.classList.contains("notVisible")){
+        pDiv.classList.toggle("notVisible")   
+    }
+
+    document.getElementById("clientNotes").value = "";
 }
 
 function bookingClient() {
@@ -171,6 +179,7 @@ function bookingClient() {
         }
     })
     .then(data => {
+        document.getElementById("selectClient").disabled = true;
         document.getElementById("bookingPhonenumber").disabled = true;
       
         let petSelector = document.getElementById('petSelect');
@@ -391,6 +400,10 @@ function appointmentSearch(e, customDay, direction){
     })
     .then(data => {
         if(data){
+            let pDiv = document.getElementById('pDiv')
+            if (pDiv.classList.contains("notVisible")){
+                pDiv.classList.toggle("notVisible")   
+            }
             appointmentDiv.innerHTML = ""
             const objectArray = Object.keys(data);
             dateValue = objectArray[0]

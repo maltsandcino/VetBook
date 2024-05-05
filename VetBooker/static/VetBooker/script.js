@@ -18,37 +18,30 @@ document.addEventListener('DOMContentLoaded', () =>{
 
 
 //TODO: Refactor below with more parameters from the Modal Div function, will pass the information directly from Modal Function no need to find it all from scratch here.
-async function submitBooking(clicked){
-    let position = clicked.dataset.value
-    let date = clicked.id
-    let doctor = document.getElementById(`date_${position}`).dataset.value
-    let clientTel = document.getElementById("bookingPhonenumber").value.replace(/\s/g, '') 
-    let note = document.getElementById("clientNotes").value
-    let length = document.getElementById("durationSelector").value
-    let day = clicked.value
-    let petSelect = document.getElementById("petSelect")
-    let petOption = petSelect.options[petSelect.selectedIndex]
-    let pet = petOption.dataset.pet
-    let response = await fetch('/addappointment', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': `${document.cookie.split('=').pop()}`
-        },
-        body: JSON.stringify({
-            number: clientTel,
-            doctorID: doctor,
-            date: day,
-            notes: note,
-            petID: pet,
-            duration: length
-        })
-    });
-    try {const result = await response.json();
-    console.log(result)}
-    catch (error) {
-        console.log("Error")
-    }
+async function submitBooking(telephone, pet, date, time, doctor, length, note){
+
+    console.log(telephone, pet, date, time, doctor, length, note)
+    
+    // let response = await fetch('/addappointment', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //         'X-CSRFToken': `${document.cookie.split('=').pop()}`
+    //     },
+    //     body: JSON.stringify({
+    //         number: clientTel,
+    //         doctorID: doctor,
+    //         date: day,
+    //         notes: note,
+    //         petID: pet,
+    //         duration: length
+    //     })
+    // });
+    // try {const result = await response.json();
+    // console.log(result)}
+    // catch (error) {
+    //     console.log("Error")
+    // }
 }
 
 //Todo: Place information into the <p> Elements, add event listener + helper function to add and remove event listener from buttons, also make div visible and not visible here.
@@ -57,7 +50,8 @@ function confirmationDiv(clicked){
 
     let position = clicked.dataset.value;
     let date = clicked.id;
-    let doctor = document.getElementById(`date_${position}`).dataset.value;
+    let doctor = document.querySelector(".selected").innerHTML;
+    let doctorID = document.getElementById(`date_${position}`).dataset.value;
     let clientTel = document.getElementById("bookingPhonenumber").value.replace(/\s/g, '');
     let note = document.getElementById("clientNotes").value;
     let lengthValue = parseInt(document.getElementById("durationSelector").value);
@@ -67,6 +61,7 @@ function confirmationDiv(clicked){
     let petName = petOption.value.split(":")[0]
     let pet = petOption.dataset.pet;
     let length = "NaN"
+    
 
     switch (lengthValue) {
         case 0:
@@ -108,6 +103,11 @@ function confirmationDiv(clicked){
     modalNote.innerHTML = `${note}`
     
     modalDiv.classList.toggle("notVisible")
+    date = date.split(",").pop()
+    date = date[7] + date[8] + date[9] + date[10] + date[3] + date[4] + date[5] + date[3] + date[1] + date[2]
+    console.log(date)
+    // telephone, pet, date, time, doctor, length, note
+    document.getElementById("confirm").addEventListener('click', submitBooking(clientTel, pet, date, time, doctorID, lengthValue, note))
     
 
 }

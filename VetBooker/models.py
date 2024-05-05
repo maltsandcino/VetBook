@@ -96,7 +96,7 @@ class Booking(models.Model):
         XLONG = 120, "Extra Long"
 
     title = models.TextField(blank=True, null=True)
-    vet = models.ManyToManyField("Vet", related_name="booking_vet")
+    vet = models.ForeignKey("Vet", related_name="booking_vet", null=False, blank=False, on_delete=models.CASCADE)
     Pet = models.ManyToManyField("Pet", related_name="booking_pet")
     Client = models.ManyToManyField("Client", related_name="booking_owner")
     day = models.DateField(auto_now_add=False, null=True)

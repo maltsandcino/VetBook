@@ -18,30 +18,39 @@ document.addEventListener('DOMContentLoaded', () =>{
 
 
 //TODO: Refactor below with more parameters from the Modal Div function, will pass the information directly from Modal Function no need to find it all from scratch here.
-async function submitBooking(telephone, pet, date, time, doctor, length, note){
-
-    console.log(telephone, pet, date, time, doctor, length, note)
+async function submitBooking(telephone, pet, date, time, doctor, length, note, subject){
     
-    // let response = await fetch('/addappointment', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //         'X-CSRFToken': `${document.cookie.split('=').pop()}`
-    //     },
-    //     body: JSON.stringify({
-    //         number: clientTel,
-    //         doctorID: doctor,
-    //         date: day,
-    //         notes: note,
-    //         petID: pet,
-    //         duration: length
-    //     })
-    // });
-    // try {const result = await response.json();
-    // console.log(result)}
-    // catch (error) {
-    //     console.log("Error")
-    // }
+    let response = await fetch('/addappointment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': `${document.cookie.split('=').pop()}`
+        },
+        body: JSON.stringify({
+            number: telephone,
+            doctorID: doctor,
+            date: date,
+            time: time,
+            note: note,
+            petID: pet,
+            duration: length,
+            title: subject
+        })
+    });
+    try {const result = await response.json();
+    console.log(result.status)
+    if (result.status === "400"){
+        alert("Please verify your data and try to submit again.");
+        modalDiv.classList.toggle("notVisible");
+    }
+
+
+    }
+    
+    
+    catch (error) {
+        console.log(error)
+    }
 }
 
 //Todo: Place information into the <p> Elements, add event listener + helper function to add and remove event listener from buttons, also make div visible and not visible here.
@@ -61,6 +70,7 @@ function confirmationDiv(clicked){
     let petName = petOption.value.split(":")[0]
     let pet = petOption.dataset.pet;
     let length = "NaN"
+    let subject = document.getElementById("medicalDomainSelector").value;
     
 
     switch (lengthValue) {
@@ -93,6 +103,7 @@ function confirmationDiv(clicked){
     let modalTime = document.getElementById("modalTime")
     let modalDuration = document.getElementById("modalDuration")
     let modalNote = document.getElementById("modalNote")
+    let modalType = document.getElementById("modalType")
     
     modalTitle.innerHTML = `Appointment Confirmation for <i>${petName}</i>`
     modalName.innerHTML = `${petName}`
@@ -101,15 +112,26 @@ function confirmationDiv(clicked){
     modalTime.innerHTML = `${time}`
     modalDuration.innerHTML = `${length}`
     modalNote.innerHTML = `${note}`
+    modalType.innerHTML = `${subject}`
     
     modalDiv.classList.toggle("notVisible")
     date = date.split(",").pop()
     date = date[7] + date[8] + date[9] + date[10] + date[3] + date[4] + date[5] + date[3] + date[1] + date[2]
     console.log(date)
     // telephone, pet, date, time, doctor, length, note
-    document.getElementById("confirm").addEventListener('click', submitBooking(clientTel, pet, date, time, doctorID, lengthValue, note))
+    
+    confirmationHandler(clientTel, pet, date, time, doctorID, lengthValue, note, subject)
     
 
+}
+
+function confirmationHandler(clientTel, pet, date, time, doctorID, lengthValue, note, subject) {
+    let confirm = document.getElementById("confirm")
+    confirm.addEventListener('click', function(event) {
+        if (event.target.matches("#confirm"))
+        {submitBooking(clientTel, pet, date, time, doctorID, lengthValue, note, subject)
+        }
+    })
 }
 
 function closeModal() {

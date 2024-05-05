@@ -133,9 +133,53 @@ def custom_times(request):
 
 ##TO DO
 def add_booking(request):
-    print("add booking")
-    return JsonResponse({"message":"More information is necessary for this path"}, status=200)
-    pass
+    ###Needs server side validation big time
+    if request.method == "POST":
+        date_format = "%Y-%m-%d"
+        data = json.loads(request.body)
+
+        owner = Client.objects.get(telephone=data.get("number"))
+        print(owner)
+        doctor = Vet.objects.get(id=data.get("doctorID"))
+        pet = Pet.objects.get(id=data.get("petID"))
+
+        date = data.get("date")
+        date = datetime.strptime(date, date_format)
+
+        time = data.get("time")
+        note = data.get("note")
+        duration = data.get("duration")
+        if duration == 0:
+            duration = 15
+        elif duration == 1:
+            duration = 30
+        elif duration == 2:
+            duration = 60
+        elif duration == 3:
+            duration = 120
+        title = data.get("title")
+
+        new_booking = Booking(title=title, day=date, start_time=time, duration=duration, comments=note, vet=doctor)
+        # new_booking.vet.set(doctor)
+        
+        
+        new_booking.save()
+        # new_booking.vet.add(doctor)
+        doctor.bookings.add(new_booking)
+        doctor.save()
+        owner.bookings.add(new_booking)
+        owner.save()
+        pet.bookings.add(new_booking)
+        pet.save()
+        new_booking.Pet.add(pet)
+        new_booking.save()
+        new_booking.Client.add(owner)
+        new_booking.save()
+        
+
+        ##Make sure to change status and messages below:
+        return JsonResponse({"message":"More information is necessary for this path", "status": "200"}, status=200) 
+    return JsonResponse({"message":"More information is necessary for this path", "status": "400"}, status=400)
 
 def get_avails(request):
     if request.method == "POST":

@@ -142,6 +142,7 @@ def add_booking(request):
         print(owner)
         doctor = Vet.objects.get(id=data.get("doctorID"))
         pet = Pet.objects.get(id=data.get("petID"))
+        pet_name = pet.name
 
         date = data.get("date")
         date = datetime.strptime(date, date_format)
@@ -159,12 +160,8 @@ def add_booking(request):
             duration = 120
         title = data.get("title")
 
-        new_booking = Booking(title=title, day=date, start_time=time, duration=duration, comments=note, vet=doctor)
-        # new_booking.vet.set(doctor)
-        
-        
+        new_booking = Booking(title=title, day=date, start_time=time, duration=duration, comments=note, vet=doctor)      
         new_booking.save()
-        # new_booking.vet.add(doctor)
         doctor.bookings.add(new_booking)
         doctor.save()
         owner.bookings.add(new_booking)
@@ -175,10 +172,12 @@ def add_booking(request):
         new_booking.save()
         new_booking.Client.add(owner)
         new_booking.save()
+
+        print("how many times does this submit")
         
 
         ##Make sure to change status and messages below:
-        return JsonResponse({"message":"More information is necessary for this path", "status": "200"}, status=200) 
+        return JsonResponse({"message":"More information is necessary for this path", "status": "200", "name": pet_name}, status=200) 
     return JsonResponse({"message":"More information is necessary for this path", "status": "400"}, status=400)
 
 def get_avails(request):

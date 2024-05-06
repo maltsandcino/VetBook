@@ -246,6 +246,13 @@ label {
     height: 100%;
 }
 
+.successful {
+    text-align: center;
+    margin: auto;
+    background-color: #22643b;
+    color: azure;
+}
+
 
 
 /* .mon {

@@ -17,41 +17,46 @@ document.addEventListener('DOMContentLoaded', () =>{
 })
 
 
-//TODO: Refactor below with more parameters from the Modal Div function, will pass the information directly from Modal Function no need to find it all from scratch here.
+//TODO: Remove event listener to avoid doubbly doing this.
 async function submitBooking(telephone, pet, date, time, doctor, length, note, subject){
+    console.log("hey")
     
-    let response = await fetch('/addappointment', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': `${document.cookie.split('=').pop()}`
-        },
-        body: JSON.stringify({
-            number: telephone,
-            doctorID: doctor,
-            date: date,
-            time: time,
-            note: note,
-            petID: pet,
-            duration: length,
-            title: subject
-        })
-    });
-    try {const result = await response.json();
-    console.log(result.status)
-    if (result.status === "400"){
-        alert("Please verify your data and try to submit again.");
-        modalDiv.classList.toggle("notVisible");
-    }
+    // let response = await fetch('/addappointment', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //         'X-CSRFToken': `${document.cookie.split('=').pop()}`
+    //     },
+    //     body: JSON.stringify({
+    //         number: telephone,
+    //         doctorID: doctor,
+    //         date: date,
+    //         time: time,
+    //         note: note,
+    //         petID: pet,
+    //         duration: length,
+    //         title: subject
+    //     })
+    // });
+    // try {const result = await response.json();
+    // console.log(result.status)
+    // if (result.status === "400"){
+    //     alert("Please verify your data and try to submit again.");
+    //     modalDiv.classList.toggle("notVisible");
+    // }
+    //     document.getElementById("confirmationModal").innerHTML = `<h4 style="margin: auto;">Booking for <i>${result.name}</i> has been successfully submited.</h4><h5>Forwarding to appointment</h5>`
+    //     document.getElementById("confirmationModal").classList.toggle("successful")
+    //     // document.getElementById("confirm").disabled = true;
 
 
-    }
+    // }
     
     
-    catch (error) {
-        console.log(error)
-    }
+    // catch (error) {
+    //     console.log(error)
+    // }
 }
+
 
 //Todo: Place information into the <p> Elements, add event listener + helper function to add and remove event listener from buttons, also make div visible and not visible here.
 //Todo: Complete validation of selected TIME, if it's not numeric (i.e. they havent chosen a time, its the default (and disabled) date) then this needs to trigger some kind of warning on the page
@@ -71,7 +76,6 @@ function confirmationDiv(clicked){
     let pet = petOption.dataset.pet;
     let length = "NaN"
     let subject = document.getElementById("medicalDomainSelector").value;
-    
 
     switch (lengthValue) {
         case 0:
@@ -120,19 +124,53 @@ function confirmationDiv(clicked){
     console.log(date)
     // telephone, pet, date, time, doctor, length, note
     
-    confirmationHandler(clientTel, pet, date, time, doctorID, lengthValue, note, subject)
+   const handleConfirmClick = (event) => { 
+    
+    
+       submitBooking(clientTel, pet, date, time, doctorID, lengthValue, note, subject);
+       confirm.removeEventListener('click', handleConfirmClick)
+   }
     
 
+    let confirm = document.getElementById("confirm")
+    // confirm.removeEventListener('click', handleConfirmClick(clientTel, pet, date, time, doctorID, lengthValue, note, subject))
+    
+    confirm.addEventListener('click', handleConfirmClick);
+
+
 }
 
-function confirmationHandler(clientTel, pet, date, time, doctorID, lengthValue, note, subject) {
-    let confirm = document.getElementById("confirm")
-    confirm.addEventListener('click', function(event) {
-        if (event.target.matches("#confirm"))
-        {submitBooking(clientTel, pet, date, time, doctorID, lengthValue, note, subject)
-        }
-    })
-}
+// function handleConfirmClick(clientTel, pet, date, time, doctorID, lengthValue, note, subject) {
+//     console.log(event.target)
+//     {if (event.target.matches("#confirm"))
+//        submitBooking(clientTel, pet, date, time, doctorID, lengthValue, note, subject);
+//    }
+// }
+
+/// Deal with the fact that this event handler needs to be removed
+// function confirmationHandler(clientTel, pet, date, time, doctorID, lengthValue, note, subject) {
+
+//       // confirm.addEventListener('click', function(event) {
+//     //     if (event.target.matches("#confirm"))
+//     //     {submitBooking(clientTel, pet, date, time, doctorID, lengthValue, note, subject)
+//     //     }
+//     // })
+//     let confirm = document.getElementById("confirm")
+  
+  
+
+//     function handleConfirmClick(event) {
+//         if (event.target.matches("#confirm")) {
+//             submitBooking(clientTel, pet, date, time, doctorID, lengthValue, note, subject);
+//         }
+//     }
+
+//     confirm.removeEventListener('click', handleConfirmClick)   
+//     confirm.addEventListener('click', handleConfirmClick);
+
+
+
+// }
 
 function closeModal() {
     let bg = document.getElementById("bg")

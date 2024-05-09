@@ -64,7 +64,7 @@
 <div id="paginationDiv" class="flex-column flexGallery notVisible"><div class="Top" id="pDiv" style="text-align: right; margin-right: 10px;"><a id="previous" onclick="paginate('left')">Previous</a> | <a id="next" onclick="paginate('right')">Next</a></div><div class="Bottom flex-row"><label style="display: inline; margin-right: 10px;" for="customInput">Custom Date</label><input style="display: inline; margin-right: 10px;" type="date" name="customInput" id="customInput">
     <div class="flex-row">
     <label style="display: inline; margin-right: 10px;" for="customMedicalDomainSelector">Doctor:</label>
-        <select style="display: inline; margin-right: 10px;" name="customMedicalDomainSelector" id="customMedicalDomainSelector">
+        <select name="customMedicalDomainSelector" id="customMedicalDomainSelector" style="display: inline; margin-right: 10px;">
             {% for vet in vetlist %}
             <option value="{{ vet.id }}">{{ vet.vet }}</option>
             {% endfor %}                

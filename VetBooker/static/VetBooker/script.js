@@ -21,40 +21,42 @@ document.addEventListener('DOMContentLoaded', () =>{
 async function submitBooking(telephone, pet, date, time, doctor, length, note, subject){
     console.log("hey")
     
-    // let response = await fetch('/addappointment', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //         'X-CSRFToken': `${document.cookie.split('=').pop()}`
-    //     },
-    //     body: JSON.stringify({
-    //         number: telephone,
-    //         doctorID: doctor,
-    //         date: date,
-    //         time: time,
-    //         note: note,
-    //         petID: pet,
-    //         duration: length,
-    //         title: subject
-    //     })
-    // });
-    // try {const result = await response.json();
-    // console.log(result.status)
-    // if (result.status === "400"){
-    //     alert("Please verify your data and try to submit again.");
-    //     modalDiv.classList.toggle("notVisible");
-    // }
-    //     document.getElementById("confirmationModal").innerHTML = `<h4 style="margin: auto;">Booking for <i>${result.name}</i> has been successfully submited.</h4><h5>Forwarding to appointment</h5>`
-    //     document.getElementById("confirmationModal").classList.toggle("successful")
-    //     // document.getElementById("confirm").disabled = true;
+    let response = await fetch('/addappointment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': `${document.cookie.split('=').pop()}`
+        },
+        body: JSON.stringify({
+            number: telephone,
+            doctorID: doctor,
+            date: date,
+            time: time,
+            note: note,
+            petID: pet,
+            duration: length,
+            title: subject
+        })
+    });
+    try {const result = await response.json();
+    console.log(result.status)
+    if (result.status === "400"){
+        alert("Please verify your data and try to submit again.");
+        modalDiv.classList.toggle("notVisible");
+    }
+        document.getElementById("confirmationModal").innerHTML = `<div style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;"><h4 style="margin: auto;">Booking for <i>${result.name}</i> has been successfully submited.</h4><h5>Forwarding to appointment.</h5></div>`
+        document.getElementById("confirmationModal").classList.toggle("successful")
+        // document.getElementById("confirm").disabled = true;
+        setTimeout(function() {
+            window.location.href = `./appointment/${result.id}`;
+         }, 3000);
 
-
-    // }
+    }
     
     
-    // catch (error) {
-    //     console.log(error)
-    // }
+    catch (error) {
+        console.log(error)
+    }
 }
 
 
@@ -131,46 +133,11 @@ function confirmationDiv(clicked){
        confirm.removeEventListener('click', handleConfirmClick)
    }
     
-
-    let confirm = document.getElementById("confirm")
-    // confirm.removeEventListener('click', handleConfirmClick(clientTel, pet, date, time, doctorID, lengthValue, note, subject))
-    
+    let confirm = document.getElementById("confirm") 
     confirm.addEventListener('click', handleConfirmClick);
 
 
 }
-
-// function handleConfirmClick(clientTel, pet, date, time, doctorID, lengthValue, note, subject) {
-//     console.log(event.target)
-//     {if (event.target.matches("#confirm"))
-//        submitBooking(clientTel, pet, date, time, doctorID, lengthValue, note, subject);
-//    }
-// }
-
-/// Deal with the fact that this event handler needs to be removed
-// function confirmationHandler(clientTel, pet, date, time, doctorID, lengthValue, note, subject) {
-
-//       // confirm.addEventListener('click', function(event) {
-//     //     if (event.target.matches("#confirm"))
-//     //     {submitBooking(clientTel, pet, date, time, doctorID, lengthValue, note, subject)
-//     //     }
-//     // })
-//     let confirm = document.getElementById("confirm")
-  
-  
-
-//     function handleConfirmClick(event) {
-//         if (event.target.matches("#confirm")) {
-//             submitBooking(clientTel, pet, date, time, doctorID, lengthValue, note, subject);
-//         }
-//     }
-
-//     confirm.removeEventListener('click', handleConfirmClick)   
-//     confirm.addEventListener('click', handleConfirmClick);
-
-
-
-// }
 
 function closeModal() {
     let bg = document.getElementById("bg")
@@ -328,6 +295,7 @@ function customDoctorSelect() {
                 }
                 
                 customDiv.innerHTML = customDiv.innerHTML + `<div class='flex-column'><select data-value="${vet}" data-paginator="${dateValue}">${selector.innerHTML}</select><button id="customSubmit">Submit</button></div>`
+                document.getElementById("customSubmit").addEventListener('click', () => {customConfirmationDiv()})
             // console.log(data)
             }
         }
@@ -338,6 +306,10 @@ function customDoctorSelect() {
         }
         )
     
+}
+
+function customConfirmationDiv(){
+    alert("does this work")
 }
 
 function doctorSelect() {
@@ -401,6 +373,16 @@ function doctorSelect() {
                         }
                     }
                     event.target.classList.toggle("selected")
+                    console.log(event.target.dataset.value)
+                    let customSelect = document.getElementById("customMedicalDomainSelector")
+                    
+                    for(let i = 0; i < customSelect.options.length; i++){
+                        let option = customSelect.options[i].value
+                        // let optionIndex = customSelect.options[i].index
+                        if(event.target.dataset.value == option){
+                        customSelect.selectedIndex = i
+                        }
+                    }
                 })
             }
         }

@@ -172,13 +172,22 @@ def add_booking(request):
         new_booking.save()
         new_booking.Client.add(owner)
         new_booking.save()
-
-        print("how many times does this submit")
-        
+        print(new_booking.id)
 
         ##Make sure to change status and messages below:
-        return JsonResponse({"message":"More information is necessary for this path", "status": "200", "name": pet_name}, status=200) 
+        return JsonResponse({"message":"More information is necessary for this path", "status": "200", "name": pet_name, "id": new_booking.id}, status=200) 
     return JsonResponse({"message":"More information is necessary for this path", "status": "400"}, status=400)
+
+                                                                ##TO DO: Finish appointment view page(s)
+def view_specific_booking(request, booking_id):
+    booking_id = int(booking_id)
+    booking = Booking.objects.get(id=booking_id)
+    client = booking.Client.all()[0]
+    pet = booking.Pet.all()[0]
+    print(booking.Client.all()[0])
+
+    return render(request, "VetBooker/view_specific_booking.html", {'pet_name': pet.name, 'client_name': client.name})
+    
 
 def get_avails(request):
     if request.method == "POST":

@@ -239,9 +239,7 @@ function paginate(direction){
         
         appointmentSearch(doctor, day, "left")
     }
-//to do: grab date from last box, queue from server for dates forwand and backward
-//to do: ensure that there is a (hidden) area holding doctor ID and procedure length in the other function in order to ensure I have the correct ID and length to pass to backend
-//to do: eventually use some css styling and JS to ensure that the selected doctor div is highlighted so users are positive which dr they are booking for
+
 }
 
 function customDoctorSelect() {
@@ -369,16 +367,19 @@ function doctorSelect() {
                 element.addEventListener('click', () => {
                     for(let i = 0; i < selectorDivs.length; i++){
                         if(selectorDivs[i].classList.contains("selected")){
+                            
                             selectorDivs[i].classList.toggle("selected")
                         }
                     }
                     event.target.classList.toggle("selected")
                     console.log(event.target.dataset.value)
+                    
+                    //Make sure the custom doctor select automatically gets changed to the selected doctor above, to avoid issues.
                     let customSelect = document.getElementById("customMedicalDomainSelector")
                     
                     for(let i = 0; i < customSelect.options.length; i++){
                         let option = customSelect.options[i].value
-                        // let optionIndex = customSelect.options[i].index
+                        
                         if(event.target.dataset.value == option){
                         customSelect.selectedIndex = i
                         }

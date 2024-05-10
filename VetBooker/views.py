@@ -139,7 +139,7 @@ def add_booking(request):
         data = json.loads(request.body)
 
         owner = Client.objects.get(telephone=data.get("number"))
-        print(owner)
+        
         doctor = Vet.objects.get(id=data.get("doctorID"))
         pet = Pet.objects.get(id=data.get("petID"))
         pet_name = pet.name
@@ -159,6 +159,11 @@ def add_booking(request):
         elif duration == 3:
             duration = 120
         title = data.get("title")
+
+        bookings_check = Booking.objects.filter(vet=doctor).filter(day=date)
+        # for current_booking in bookings_check:
+            # print(current_booking.duration)
+            # print(current_booking.start_time)
 
         new_booking = Booking(title=title, day=date, start_time=time, duration=duration, comments=note, vet=doctor)      
         new_booking.save()
@@ -228,7 +233,8 @@ def get_avails(request):
             today = week_in_future - timedelta(days=8)
         
         ###We need to know the length of the duration of the appointment in order to properly find available slots. Filtering between today and LESS than 1 week in the future
-        duration = int(data.get("duration", ""))      
+        duration = int(data.get("duration", ""))
+           
         planned_bookings = Booking.objects.filter(vet=vet).filter(day__gte=today).filter(day__lte=week_in_future)
         bookings = []
         for b in planned_bookings:
@@ -253,57 +259,136 @@ def get_avails(request):
             for m in minutes:
                 all_time_slots.append(h+":"+m)
         
+        
+        
         week_slots = {}
         day_names = list(calendar.day_abbr)
         new_keys = []
+        
         for i in range(DAY_CONSTANT):
             current_day = today + timedelta(days=i)
             if date.weekday(current_day) != 6:
                 week_slots[str(current_day)] = all_time_slots[:]
                 new_keys.append(f"{day_names[date.weekday(current_day)]}, {str(current_day)[8:10]}-{str(current_day)[5:7]}-{str(current_day)[0:4]}")
         
+
+        
+        
+        
         ###Remove times at ends of day for durations that take more than 15 minutes:
         
         for key in week_slots:
             if duration == 1:
-                week_slots[key] = week_slots[key][0:35]
+                week_slots[key] = week_slots[key][0:31]
             if duration == 2:
-                week_slots[key] = week_slots[key][0:33]
-            if duration == 3:
+                
                 week_slots[key] = week_slots[key][0:29]
+            if duration == 3:
+               
+                week_slots[key] = week_slots[key][0:25]
+        
+        
         
      
         ###Remove times that dont fit. This bit is cumbersome
+        ###TODO:    Issue when there are multiple appointments being booked, the lists within the dict grow with each booking. Try solving by
+        ###         creating a set of all indices to be removed as you iterate through the bookings, then remove them all at the end?
+
+#         Example: centroids = [[320, 240], [400, 200], [450, 600]]
+#                   index_to_remove = [0, 2]
+
+# #                 Create a new list without the elements at the specified indices
+#                   result = [element for i, element in enumerate(centroids) if i not in index_to_remove]
+
+#                   print(result)  # Output: [[400, 200]]
+
+        
         ITERATION_LIST = [0, 1, 3, 7]
         ITERATOR_LIST = [0, 1, 2, 3]
-        for i, j in zip(ITERATOR_LIST, ITERATION_LIST):
-            if duration == i:
-                for b in bookings:
-                    print(b.start_time)
-                    apt_time = str(b.start_time)[0:5]
-                    day = str(b.day)
-                    if apt_time in week_slots[day]:
-                        index = week_slots[day].index(apt_time)
-                        if b.duration == 15:
-                            week_slots[day] = week_slots[day][0:index - j] + week_slots[day][index + 1:]                   
-                        if b.duration == 30:
-                            try:
-                                week_slots[day] = week_slots[day][0:index - j] + week_slots[day][index + j:]
-                            except:
-                                week_slots[day] = week_slots[day][0:index - j]  
-                        if b.duration == 60:
-                            try:
-                                week_slots[day] = week_slots[day][0:index - j] + week_slots[day][index + 3:]
-                            except:
-                                week_slots[day] = week_slots[day][0:index - j]
-                        if b.duration == 120:
-                            try:
-                                week_slots[day] = week_slots[day][0:index - j] + week_slots[day][index + 8:]
-                            except:
-                                week_slots[day] = week_slots[day][0:index - j]
+
+        for day in week_slots:
+            blocked_indices = set()
+
+            for i, j in zip(ITERATOR_LIST, ITERATION_LIST):
+                if duration == i:
+                    for b in bookings:
+                        apt_time = str(b.start_time)[0:5]
+                        booking_day = str(b.day)
+                        if booking_day == day:
+                            if apt_time in week_slots[day]:
+                                index = week_slots[day].index(apt_time)
+                                if b.duration == 15:
+                                    blocked_indices.add(index)
+                                if b.duration == 30:
+                                    for x in range(index - j, index + 2):
+                                        if x > -1 and x < len(week_slots[day]):
+                                            blocked_indices.add(x)
+                                if b.duration == 60:
+                                    for x in range(index - j, index + 4):
+                                        if x > -1 and x < len(week_slots[day]):
+                                            blocked_indices.add(x)
+                                if b.duration == 120:
+                                    for x in range(index - j, index + 9):
+                                        if x > -1 and x < len(week_slots[day]):
+                                            blocked_indices.add(x)
+            week_slots[day] = [slot for i, slot in enumerate(week_slots[day]) if i not in blocked_indices]
+            print(f'{day}: {week_slots[day]}')
+
+        # for i, j in zip(ITERATOR_LIST, ITERATION_LIST):
+        #     if duration == i:
+                
+                # for b in bookings:
+                #     apt_time = str(b.start_time)[0:5]
+                #     day = str(b.day)
+                #     blocked_indices = set()
+                #     if apt_time in week_slots[day]:
+                #         index = week_slots[day].index(apt_time)
+                        # print(index)
+                        # if b.duration == 15:
+                            # print(f"15 minutes at {index}")
+                        #     blocked_indices.add(index)                
+                        # if b.duration == 30:
+                        #     for x in range(index - j, index + 1):
+                        #         if x > -1 and x < len(week_slots[day]):
+                        #             print(x)
+                        #             blocked_indices.add(x)
+                                    
+                            # print(f"30 minutes at {index}")
+                        #     try:
+                        #         week_slots[day] = week_slots[day][0:index - j] + week_slots[day][index + j:]
+                        #     except:
+                        #         week_slots[day] = week_slots[day][0:index - j]  
+                        # if b.duration == 60:
+                        #     for x in range(index - j, index + 3):
+                        #         if x > -1 and x < len(week_slots[day]):
+                        #             blocked_indices.add(x)
+                            # print(f"60 minutes at {index}")
+                        #     try:
+                        #         week_slots[day] = week_slots[day][0:index - j] + week_slots[day][index + 3:]
+                        #     except:
+                        #         week_slots[day] = week_slots[day][0:index - j]
+                        # if b.duration == 120:
+                        #     for x in range(index - j, index + 8):
+                        #         if x > -1 and x < len(week_slots[day]):
+                        #             blocked_indices.add(x)
+                        
+                                
+                           
+                            # print(f"120 minutes at {index}")
+                        #     try:
+                        #         week_slots[day] = week_slots[day][0:index - j] + week_slots[day][index + 8:]
+                        #     except:
+                        #         week_slots[day] = week_slots[day][0:index - j]
+        
+        
+
+        # result = [element for i, element in enumerate(centroids) if i not in index_to_remove]
+
         updated_week_slots = {}
         for i, key in enumerate(week_slots):
             updated_week_slots[new_keys[i]] = week_slots[key]
+        
+        
         
         return JsonResponse(updated_week_slots, status=200, safe=False)
     return JsonResponse({"message":"More information is necessary for this path"}, status=400)

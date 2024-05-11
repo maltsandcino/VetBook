@@ -279,7 +279,8 @@ function customDoctorSelect() {
     })
     .then(data => {
         if(data){
-            document.getElementById("customAppointment").classList.toggle("notVisible")
+            if(document.getElementById("customAppointment").classList.contains("notVisible")){
+            document.getElementById("customAppointment").classList.toggle("notVisible")}
             customDiv.innerHTML = ""
             const objectArray = Object.keys(data);
             dateValue = objectArray[0]
@@ -292,7 +293,7 @@ function customDoctorSelect() {
                     selector.innerHTML = selector.innerHTML + `<option>${value}</option>`
                 }
                 
-                customDiv.innerHTML = customDiv.innerHTML + `<div class='flex-column'><select data-value="${vet}" data-paginator="${dateValue}">${selector.innerHTML}</select><button id="customSubmit">Submit</button></div>`
+                customDiv.innerHTML = customDiv.innerHTML + `<div class='flex-column'><select data-value="${vet}" data-paginator="${dateValue}" id="customSelect">${selector.innerHTML}</select><button id="customSubmit">Submit</button></div>`
                 document.getElementById("customSubmit").addEventListener('click', () => {customConfirmationDiv()})
             // console.log(data)
             }
@@ -307,8 +308,79 @@ function customDoctorSelect() {
 }
 
 function customConfirmationDiv(){
-    alert("does this work")
+   
+    let date = document.getElementById("customSelect").dataset.paginator
+    let doctor = document.getElementById("customMedicalDomainSelector").value;
+    let doctorID = document.getElementById("customSelect").dataset.value;
+    let clientTel = document.getElementById("bookingPhonenumber").value.replace(/\s/g, '');
+    let note = document.getElementById("clientNotes").value;
+    let lengthValue = parseInt(document.getElementById("customDurationSelector").value);
+    let time = document.getElementById("customSelect").value;
+    let petSelect = document.getElementById("petSelect");
+    let petOption = petSelect.options[petSelect.selectedIndex];
+    let petName = petOption.value.split(":")[0]
+    let pet = petOption.dataset.pet;
+    let length = "NaN"
+    let subject = "Custom Appointment";
+
+    switch (lengthValue) {
+        case 0:
+            length = "15 Minutes"
+            break;
+        case 1:
+            length = "30 Minutes"
+            break;
+        case 2:
+            length = "60 Minutes"
+            break;
+        case 3:
+            length = "120 Minutes"
+            break;
+    }
+
+    if(isNaN(time[0])){
+        alert("Please select a valid timeslot.")
+        return false
+    }
+    
+    let bg = document.getElementById("bg")
+    bg.classList.toggle("bg")
+    let modalDiv = document.getElementById("confirmationModal")
+    let modalTitle = document.getElementById("modalTitle")
+    let modalName = document.getElementById("modalPet")
+    let modalDoctor = document.getElementById("modalDoctor")
+    let modalDay = document.getElementById("modalDay")
+    let modalTime = document.getElementById("modalTime")
+    let modalDuration = document.getElementById("modalDuration")
+    let modalNote = document.getElementById("modalNote")
+    let modalType = document.getElementById("modalType")
+    
+    modalTitle.innerHTML = `Appointment for <i>${petName}</i>`
+    modalName.innerHTML = `${petName}`
+    modalDoctor.innerHTML = `${doctor}`
+    modalDay.innerHTML = `${date}`
+    modalTime.innerHTML = `${time}`
+    modalDuration.innerHTML = `${length}`
+    modalNote.innerHTML = `${note}`
+    modalType.innerHTML = `${subject}`
+    
+    modalDiv.classList.toggle("notVisible")
+    date = date.split(",").pop()
+    date = date[7] + date[8] + date[9] + date[10] + date[3] + date[4] + date[5] + date[3] + date[1] + date[2]
+    console.log(date)
+    // telephone, pet, date, time, doctor, length, note
+    
+   const handleConfirmClick = (event) => { 
+    
+    
+       submitBooking(clientTel, pet, date, time, doctorID, lengthValue, note, subject);
+       confirm.removeEventListener('click', handleConfirmClick)
+   }
+    
+    let confirm = document.getElementById("confirm") 
+    confirm.addEventListener('click', handleConfirmClick);
 }
+
 
 function doctorSelect() {
     if (document.getElementById("doctorList").classList.contains("notVisible")){

@@ -102,7 +102,7 @@ class Booking(models.Model):
     day = models.DateField(auto_now_add=False, null=True)
     start_time = models.TimeField(auto_now_add=False)
     duration = models.IntegerField(choices=Duration.choices, default=Duration.SHORT, verbose_name="Duration", blank=True, null=True)
-    procedure = models.ManyToManyField("Procedure", related_name="booking_procedure")
+    procedure = models.ManyToManyField("Procedure", related_name="booking_procedure", blank=True, null=True)
     comments = models.TextField(blank=True)
     
     def __str__(self):

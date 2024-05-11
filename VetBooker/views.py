@@ -191,13 +191,27 @@ def add_booking(request):
 
                                                                 ##TO DO: Finish appointment view page(s)
 def view_specific_booking(request, booking_id):
+    ###Getting all relevant booking information
     booking_id = int(booking_id)
     booking = Booking.objects.get(id=booking_id)
     client = booking.Client.all()[0]
     pet = booking.Pet.all()[0]
-    print(booking.Client.all()[0])
+    note = booking.comments
+    day = booking.day
+    time = booking.start_time
+    vet = booking.vet.name
+    duration = booking.duration
 
-    return render(request, "VetBooker/view_specific_booking.html", {'pet_name': pet.name, 'client_name': client.name})
+    ##Determine what day of the week it is
+    day_names = list(calendar.day_abbr)
+    day_name = day_names[date.weekday(day)]
+    day = str(day)
+    ##Put string in American format
+    day = day[5:7] + day[4:5] + day[8:10] + day[4:5] + day[0:4]
+
+    
+    ##Pass information to template
+    return render(request, "VetBooker/view_specific_booking.html", {'pet_name': pet.name, 'client_name': client.name, 'vet_name': vet, })
     
 
 def get_avails(request):

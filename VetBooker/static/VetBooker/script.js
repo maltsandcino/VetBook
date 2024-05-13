@@ -21,15 +21,83 @@ document.addEventListener('DOMContentLoaded', () =>{
         })
     }
 
+    if (document.getElementById("search")){
+        document.getElementById("search").addEventListener('click', () => {findUserBookings()});
+        document.getElementById('clientTel').addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+              findUserBookings();
+            }
+        }
+    )
+    }
+
     if (document.getElementById("generate")){
         document.getElementById("generate").addEventListener('click', () => {generateBookings()})
     }
 })
 
+async function findUserBookings() {
+    let clientTel = document.getElementById("clientTel").value;
+    console.log(clientTel)
+    
+    let mainDiv = document.getElementById("appointmentContainer");
+    mainDiv.innerHTML = '<div id="appointmentGallery"></div>'
+
+    let response = await fetch('/clientAppointments', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': `${document.cookie.split('=').pop()}`
+        },
+        body: JSON.stringify({
+            client: clientTel,
+        })
+    });
+    try {const result = await response.json()
+     
+        let bookings = result.bookings
+        console.log(result.bookings)
+        document.getElementById("nameContainer").classList.toggle("notVisible")
+        document.getElementById("name").innerHTML = `${result.name}`;
+       
+        if(result.bookings){
+        for (const [i, value] of Object.entries(bookings)) {
+            let sibDiv = document.getElementById("appointmentGallery");
+            let aDiv = document.createElement('div');
+            aDiv.classList.add("appointmentDiv");
+            aDiv.classList.add("flex-spaced")
+            aDiv.id = `appointment_${i}`;
+            aDiv.innerHTML = `<div class="fifty"><p>Subject:</p>
+                                <p>Day:</p>
+                                    <p>Time:</p>
+                                    <p>Duration:</p></div>
+                                <div class="fifty">
+                                <p>${value[0]}</p>
+                                <p>${value[1]}</p>
+                                <p>${value[2]}</p>
+                                <p>${value[3]} Minutes</p></div>`
+            aDiv.addEventListener('click', function() {window.location.href = `./appointment/${value[4]}`})
+            sibDiv.parentNode.insertBefore(aDiv, sibDiv);
+        }}      
+        
+        // bookings.forEach(function (booking) {
+        //     console.log(booking);
+        // });
+    
+    }
+    catch (error) {
+        if(!document.getElementById("nameContainer").classList.contains("notVisible")){
+            document.getElementById("nameContainer").classList.toggle("notVisible")
+        }
+        console.log(error)
+    }
+}
 async function generateBookings(){
     let vet_id = document.getElementById("vetSelect").value;
     let date = document.getElementById("dateSelect").value;
-    
+    let mainDiv = document.getElementById("appointmentContainer");
+    mainDiv.innerHTML = '<div id="appointmentGallery"></div>'
+
     let response = await fetch('/generateAppointments', {
         method: 'POST',
         headers: {
@@ -42,7 +110,39 @@ async function generateBookings(){
         })
     });
     try {const result = await response.json()
-        console.log(result)
+        // console.log(result.bookings)
+
+        let bookings = result.bookings
+        if(result.bookings){
+        for (const [i, value] of Object.entries(bookings)) {
+            let sibDiv = document.getElementById("appointmentGallery");
+            let aDiv = document.createElement('div');
+            aDiv.classList.add("appointmentDiv");
+            aDiv.classList.add("flex-spaced")
+            aDiv.id = `appointment_${i}`;
+            aDiv.innerHTML = `<div class="fifty"><p>Subject:</p>
+                                <p>Day:</p>
+                                    <p>Time:</p>
+                                    <p>Duration:</p></div>
+                                <div class="fifty">
+                                <p>${value[0]}</p>
+                                <p>${value[1]}</p>
+                                <p>${value[2]}</p>
+                                <p>${value[3]} Minutes</p></div>`
+            aDiv.addEventListener('click', function() {window.location.href = `./appointment/${value[4]}`})
+            sibDiv.parentNode.insertBefore(aDiv, sibDiv);
+        
+            
+            ;
+        }}
+
+
+       
+        
+        // bookings.forEach(function (booking) {
+        //     console.log(booking);
+        // });
+    
     }
     catch (error) {
         console.log(error)

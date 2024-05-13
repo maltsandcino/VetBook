@@ -85,6 +85,21 @@ button:hover {
     gap: 20px;
 }
 
+
+.appointmentDiv {
+    width: 100%;
+    min-height: 100px;
+    margin-bottom: 10px;
+    text-align: left;
+    background-color: #2b3035;
+    border-radius: 5px;
+}
+
+.appointmentDiv:hover {
+    cursor: pointer;
+    background-color:#535353;
+}
+
 .vetSelector {
     display: flex;
     align-items: center;

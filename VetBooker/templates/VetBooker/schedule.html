@@ -1,8 +1,9 @@
 {% extends "VetBooker/layout.html" %}
 {% load static %}
 {% block body %}
+{% csrf_token %}
 <h3 class="pageTitle">Scheduling</h3>
-{{ date }}
+
 <div class="flex-column fortyVW marginsAuto">
     <div class="flex-spaced-between">
         <label for="vetSelect">
@@ -20,7 +21,9 @@
     <button id="generate">Check Daily Appointments</button>
 </div>
 
-<div class="fortyVW flexGallery marginsAuto" style='border: 1px solid red'>
-    sdsdsdsdsd
+<div class="fortyVW flexGallery marginsAuto" id="appointmentContainer">
+    <div id="appointmentGallery">
+
+    </div>
 </div>
 {% endblock %}

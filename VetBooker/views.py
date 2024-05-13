@@ -19,11 +19,45 @@ def generate_appointments(request):
         data = json.loads(request.body)
         vet_id = data.get("vet")
         day = data.get("date")
-        print(vet_id)
-        print(day)
         vet = Vet.objects.get(id=vet_id)
-        print(vet)
-        return JsonResponse({"message":"No vets found with this skill"}, status=400)
+        bookings = Booking.objects.filter(vet=vet).filter(day=day)
+        date_format = "%a %m-%b-%y"
+       
+        if not vet or not bookings:
+            return JsonResponse({"message": "No bookings found on this date"})
+        booking_list = {}
+        print(bookings)
+        for i, booking in enumerate(bookings):
+            day_string = str(booking.day)
+            day_string = day_string[5:7] + day_string[4] + day_string[8:] + day_string[4] + day_string[0:4]
+            day_names = list(calendar.day_abbr)
+            day_name = day_names[date.weekday(booking.day)]
+            day_string = f"{day_name} {day_string}"
+            booking_list[i] = [booking.title, day_string, str(booking.start_time)[0:5], booking.duration, booking.id]
+        
+    return JsonResponse({"date": day, "vet": vet.name, "bookings": booking_list}, status=200)
+
+###TODO: Work on listings
+def appointments(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        tel = data.get("client")
+        client = Client.objects.get(telephone=tel)
+        client_name = client.name
+        
+        bookings = Booking.objects.filter(Client=client)
+        booking_list = {}
+        for i, booking in enumerate(bookings):
+            day_string = str(booking.day)
+            day_string = day_string[5:7] + day_string[4] + day_string[8:] + day_string[4] + day_string[0:4]
+            day_names = list(calendar.day_abbr)
+            day_name = day_names[date.weekday(booking.day)]
+            day_string = f"{day_name} {day_string}"
+            name = booking.Pet.all()[0].name
+            booking_list[i] = [name, day_string, str(booking.start_time)[0:5], booking.duration, booking.id]
+        return JsonResponse({"bookings": booking_list, "name": client_name, "telephone": tel}, status=200)
+        
+    return render(request, "VetBooker/search.html")
 
 def schedule(request):
     today = date.today()
@@ -429,7 +463,7 @@ def register(request):
 
 def index(request):
 
-    return render(request, "VetBooker/index.html", {'message': f"Welcome, {request.user.username}."})
+    return render(request, "VetBooker/index.html", {'message': f"Welcome, {request.user.username}"})
 
 def book(request):
 

@@ -1,0 +1,27 @@
+{% extends "VetBooker/layout.html" %}
+{% load static %}
+{% block body %}
+{% csrf_token %}
+
+<h3 class="pageTitle">Client Appointment Search</h3>
+
+<div class="flex-column fortyVW marginsAuto">
+    <div class="flex-spaced-between">
+        <label for="clientTel">
+            Client Telephone
+        </label>
+        <input type="text" id="clientTel" name="clientTel">
+    </div>
+    <br>
+    <button id="search">Check Client Appointments</button>
+</div>
+<br>
+<div class="fortyVW flex-row marginsAuto notVisible" id="nameContainer"><h6>Checking appoinments for: <span id="name"></span></span></h6></div>
+
+
+<div class="fortyVW flexGallery marginsAuto" id="appointmentContainer">
+    <div id="appointmentGallery">
+
+    </div>
+</div>
+{% endblock %}

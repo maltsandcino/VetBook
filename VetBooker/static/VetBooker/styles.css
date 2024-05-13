@@ -124,6 +124,11 @@ button:hover {
     color: white;
 }
 
+.highlight:hover {
+    cursor: pointer;
+    background-color:#535353;
+}
+
 .flex-spaced-between {
     display: flex;
     flex-direction: row;
@@ -336,4 +341,9 @@ td:nth-child(even) {
 
 .threeQuartersHeight {
     height: 75%;
+}
+
+.thirtyVW {
+    width: 35vw;
+    height: 35vh;
 }

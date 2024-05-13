@@ -25,8 +25,12 @@
 </div>
 
 <div id="managePets" class="notVisible flex-spaced"><button id="addExisting">Add Existing Pets</button><button id="createNew">Add New Pet</Button></div>
+<div id="bg"></div>
 <div id="addPet" class="modal notVisible flex-column fortyVW">
-    <h6 class="centerText" style="padding-top: 5px;">Add a new pet to the system below</h6>
+    <div class="hundredW flex-end">
+    <div style="margin-bottom: 0px; text-align: center; width: 20px;" class="highlight" title="Close" onclick="closeNewPetModal()">X</div>
+    </div>
+    <h6 class="centerText">Add a new pet to the system below</h6>
     <div class="flex-row threeQuartersHeight">
         <div id="leftAdd" class="flex-wrap-column hundredW">
             <div class="flex-spaced-apart">

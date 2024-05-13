@@ -867,7 +867,15 @@ function addToOwner(user, pet){
         })
 }
 
+function closeNewPetModal(){
+    let bg = document.getElementById("bg")
+    bg.classList.toggle("bg")
+    document.getElementById("addPet").classList.toggle("notVisible");
+}
+
 function addNewPet(data){
+    let bg = document.getElementById("bg")
+    bg.classList.toggle("bg")
     document.getElementById("addPet").classList.toggle("notVisible");
     if(document.getElementById("ownerP")){
         document.getElementById("ownerP").remove()

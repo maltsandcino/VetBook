@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from .models import User, Pet, Client, Booking, Procedure, Vet, Skill
+from .models import User, Pet, Client, Booking, Vet, Skill
 from django import forms
 import calendar
 from django.http import JsonResponse
@@ -13,6 +13,28 @@ from datetime import date, timedelta, datetime
 
 
 # Create your views here.
+
+def generate_appointments(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        vet_id = data.get("vet")
+        day = data.get("date")
+        print(vet_id)
+        print(day)
+        vet = Vet.objects.get(id=vet_id)
+        print(vet)
+        return JsonResponse({"message":"No vets found with this skill"}, status=400)
+
+def schedule(request):
+    today = date.today()
+    vets = Vet.objects.all()
+    vet_list = []
+    for vet in vets:
+        vet_list.append(vet)
+    
+    print(vet_list)
+    return render(request, "VetBooker/schedule.html", {'date': today, 'vet_list': vet_list})
+
 
 def get_doctors(request):
     if request.method == "POST":
@@ -134,7 +156,6 @@ def custom_times(request):
         
         return JsonResponse(updated_week_slots, status=200, safe=False)
     return JsonResponse({"message":"More information is necessary for this path"}, status=400)
-    pass
 
 
 ##TO DO
@@ -201,6 +222,7 @@ def view_specific_booking(request, booking_id):
     time = booking.start_time
     vet = booking.vet.name
     duration = booking.duration
+    booking_name = booking.title
 
     ##Determine what day of the week it is
     day_names = list(calendar.day_abbr)
@@ -211,7 +233,7 @@ def view_specific_booking(request, booking_id):
 
     
     ##Pass information to template
-    return render(request, "VetBooker/view_specific_booking.html", {'pet_name': pet.name, 'client_name': client.name, 'vet_name': vet, })
+    return render(request, "VetBooker/view_specific_booking.html", {'pet_name': pet.name, 'client_name': client.name, 'vet_name': vet, 'note': note, 'time': time, 'duration': duration, 'pet_id': pet.id, 'booking_name': booking_name, 'date': day})
     
 
 def get_avails(request):

@@ -2,7 +2,74 @@
 {% load static %}
 {% block body %}
 {% csrf_token %}
+<h3 class="pageTitle">Appointment for {{ pet_name }}</h3>
 
-{{ pet_name }} belongs to {{ client_name }}
+<table class="centered bookingListing" >
+    <thead> 
+        
+            <th colspan="2" class="centerText">
+                {{ booking_name }}
+            </th>
+        
+    </thead>
+    <tbody>  
+    <tr>
+        <td>
+            Client:
+        </td>
+        <td>
+            {{ client_name }}
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Pet:
+        </td>
+        <td>
+            {{ pet_name }}
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Vet:
+        </td>
+        <td>
+            {{ vet_name }}
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Date:
+        </td>
+        <td>
+            {{ date }}
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Time:
+        </td>
+        <td>
+            {{ time }}
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Duration:
+        </td>
+        <td>
+            {{ duration }}
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Notes:
+        </td>
+        <td>
+            {{ note }}
+        </td>
+    </tr>
+    </tbody>
+</table>
 
 {% endblock %}

@@ -3,6 +3,10 @@ button {
     border: none;
 }
 
+.centered {
+    margin: auto;
+}
+
 button:hover {
     
     background-color: #2b3035;
@@ -41,11 +45,25 @@ button:hover {
     justify-content: center;
 }
 
+.fifty {
+    width: 50%;
+}
+
 .flex-center-wrap {
     display: flex;
     flex-direction: row;
     justify-content: center;
     flex-wrap: wrap;
+}
+
+.flex-center-wrap-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: auto;
+    width: 40vw;
+    min-width: 400px;
 }
 
 .fortyVW {
@@ -148,7 +166,7 @@ label {
 
 .twenty {
     margin: auto;
-    width: 20vw;
+    width: 15vw;
 }
 .hoverClick:hover {
     cursor: pointer;
@@ -253,8 +271,24 @@ label {
     color: azure;
 }
 
+.bookingListing {
+    margin-top: 50px;
+    width: 40vw;
+    min-width: 300px;
+}
 
+thead {
+    background-color: #2b3035;
+    border-bottom: 1px dashed grey;
+}
+tr:nth-child(even) {
+    background-color: #2b3035;
+  }
 
-/* .mon {
-    color: red;
-} */
+td:nth-child(odd) {
+    width: 100px;
+    border-right: 1px dashed grey;
+}
+td:nth-child(even) {
+    padding-left: 3px;
+}

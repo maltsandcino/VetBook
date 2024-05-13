@@ -1,11 +1,17 @@
 
 document.addEventListener('DOMContentLoaded', () =>{
+    if (document.getElementById("dateSelect")){
+        document.getElementById('dateSelect').valueAsDate = new Date();
+    }
+
     if (document.getElementById("medicalDomainSelect")){
     document.getElementById("medicalDomainSelect").addEventListener('click', () => {doctorSelect()})
     ;}
+
     if (document.getElementById("customDay")){
         document.getElementById("customDay").addEventListener('click', () => {customDoctorSelect()})
     }
+
     if (document.getElementById("selectClient")){
         document.getElementById("selectClient").addEventListener('click', () => {bookingClient()});
         document.getElementById('bookingPhonenumber').addEventListener("keypress", (e) => {
@@ -14,7 +20,34 @@ document.addEventListener('DOMContentLoaded', () =>{
             }
         })
     }
+
+    if (document.getElementById("generate")){
+        document.getElementById("generate").addEventListener('click', () => {generateBookings()})
+    }
 })
+
+async function generateBookings(){
+    let vet_id = document.getElementById("vetSelect").value;
+    let date = document.getElementById("dateSelect").value;
+    
+    let response = await fetch('/generateAppointments', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': `${document.cookie.split('=').pop()}`
+        },
+        body: JSON.stringify({
+            vet: vet_id,
+            date: date
+        })
+    });
+    try {const result = await response.json()
+        console.log(result)
+    }
+    catch (error) {
+        console.log(error)
+    }
+}
 
 
 //TODO: Remove event listener to avoid doubbly doing this.

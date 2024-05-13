@@ -1,0 +1,26 @@
+{% extends "VetBooker/layout.html" %}
+{% load static %}
+{% block body %}
+<h3 class="pageTitle">Scheduling</h3>
+{{ date }}
+<div class="flex-column fortyVW marginsAuto">
+    <div class="flex-spaced-between">
+        <label for="vetSelect">
+            Select Doctor
+        </label>
+        <select id="vetSelect" name="vetSelect">
+            {% for vet in vet_list %}
+            <option value="{{vet.id}}">{{ vet.name }}</option>
+            {% endfor %}
+        </select>
+        <label for="dateSelect">Select Date</label>
+        <input type="date" name="dateSelect" id="dateSelect">
+    </div>
+    <br>
+    <button id="generate">Check Daily Appointments</button>
+</div>
+
+<div class="fortyVW flexGallery marginsAuto" style='border: 1px solid red'>
+    sdsdsdsdsd
+</div>
+{% endblock %}

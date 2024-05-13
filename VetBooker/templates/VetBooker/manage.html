@@ -4,6 +4,7 @@
 
     <h3 class="pageTitle">Client Management</h3>
     <div class="centerText">
+<div class="flex-spaced">
     <div class="customer" onclick="manageCustomer()">
         <button class="twenty">Manage existing client </button>
     </div>
@@ -12,16 +13,36 @@
         <button class="twenty">Add a new client</button>
     </div>
     <br>
-    <div class="pet" onclick="managePet">
+    <div class="pet" onclick="addNewPet()">
         <button class="twenty">Add a new pet</button>
     </div>
 </div>
-<div id="managementDiv" class="notVisible flex-column">
+</div>
+<br>
+<div id="managementDiv" class="notVisible flex-column fortyVW"><br>
     {% csrf_token %}
     <!-- <label for=""></label> -->
 </div>
 
 <div id="managePets" class="notVisible flex-spaced"><button id="addExisting">Add Existing Pets</button><button id="createNew">Add New Pet</Button></div>
+<div id="addPet" class="modal notVisible flex-column fortyVW">
+    <h6 class="centerText" style="padding-top: 5px;">Add a new pet to the system below</h6>
+    <div class="flex-row threeQuartersHeight">
+        <div id="leftAdd" class="flex-wrap-column hundredW">
+            <div class="flex-spaced-apart">
+            <label for="petName" class="hundredPixels">Name</label> <input id="petName" type="text" name="petName">
+            </div>
+            <div class="flex-spaced-apart">
+            <label for="petSpecies">Species</label><input id="petSpecies" type="text" name="petSpecies">
+            </div>
+            <div class="flex-spaced-apart" id="lastNode">
+            <label for="petBreed">Breed</label><input id="petSpecies" type="text" name="petBreed"> 
+            </div>       
+        </div>
+        
+    </div>
+    <button style="width: 30%; margin: auto;">Submit</button>
+</div>
 {% endblock %}
 
 <!-- Add javascript to make the Div visible in order to add and remove pets and customers as well as update them-->

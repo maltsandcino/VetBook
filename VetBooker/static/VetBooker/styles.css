@@ -39,6 +39,10 @@ button:hover {
     width: 100%;
 }
 
+.hundredPixels {
+    width: 100px;
+}
+
 .flex-center {
     display: flex;
     flex-direction: row;
@@ -64,6 +68,14 @@ button:hover {
     margin: auto;
     width: 40vw;
     min-width: 400px;
+}
+
+.flex-wrap-column {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: 100%;
+    justify-content: space-around;
 }
 
 .fortyVW {
@@ -118,12 +130,26 @@ button:hover {
     justify-content: space-between;
 }
 
+.flex-spaced-apart {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+
 .flex-end {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
     margin-left: auto;
     gap: 20px;
+}
+
+.textRight {
+    text-align: right;
+    margin-left: 10px;
 }
 
 #managePets {
@@ -306,4 +332,8 @@ td:nth-child(odd) {
 }
 td:nth-child(even) {
     padding-left: 3px;
+}
+
+.threeQuartersHeight {
+    height: 75%;
 }

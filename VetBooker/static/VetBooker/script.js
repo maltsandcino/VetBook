@@ -740,7 +740,7 @@ function manageCustomerSearch(args) {
         if (document.querySelector(".customerResults")){
             customerResults = document.querySelector(".customerResults")
             customerResults.innerHTML = "";
-            customerResults.innerHTML = `<div class='resultsTop' style='text-align:left;'><div id="editName">${data.name}</div></div> <div name='resultsBigContainer' class='flex-row'> <div id='categories'><p id="editEmail">E-Mail</p><p id="editAddress">Address</p><p id="editTelephone">Telephone</p><p>Pets</p><button id="editPets">Edit Pets</button></div><div id='results'><div id="containEmail"><p>${data.email}</p></div> <div id="containAddress"><p>${data.address}</p></div> <div id="containTelephone"><p>${data.telephone}</p></div></div> </div>`
+            customerResults.innerHTML = `<div class='resultsTop' style='text-align:left;'></div> <div name='resultsBigContainer' class='flex-row'> <div id='categories'><p id="editName" class="flex-spaced-between">Client <span class="textRight">✏️</span></p><p id="editEmail" class="flex-spaced-between">E-Mail <span class="textRight">✏️</span></p><p id="editAddress" class="flex-spaced-between">Address <span class="textRight">✏️</span></p><p id="editTelephone" class="flex-spaced-between">Telephone <span class="textRight">✏️</span></p><p>Pets</p><button id="editPets">Edit Pets</button></div><div id='results'><div containName><p>${data.name}</p></div><div id="containEmail"><p>${data.email}</p></div> <div id="containAddress"><p>${data.address}</p></div> <div id="containTelephone"><p>${data.telephone}</p></div></div> </div>`
             managementDiv.append(customerResults);
             let results = document.getElementById('results');
             const petInfo = data.pets.map((pet) => `<p>${pet.name}: ${pet.species} </p><p class="petList"> <button onclick="remove(${pet.id})">Remove</button> <button onclick="viewBookings(${pet.id})">View Appointments</button></p>`);
@@ -754,7 +754,7 @@ function manageCustomerSearch(args) {
         else {
             const customerResults = document.createElement('div');
             customerResults.className = 'customerResults'
-            customerResults.innerHTML = `<div class='resultsTop' style='text-align:left;'><div id="editName">${data.name}</div></div> <div name='resultsBigContainer' class='flex-row'> <div id='categories'><p id="editEmail">E-Mail</p><p id="editAddress">Address</p><p id="editTelephone">Telephone</p><p>Pets</p><button id="editPets">Edit Pets</button></div><div id='results'><div id="containEmail"><p id="editEmail">${data.email}</p></div> <div id="containAddress"><p id="editAddress">${data.address}</p></div> <div id="containTelephone"><p id="editTelephone">${data.telephone}</p></div></div> </div>`
+            customerResults.innerHTML = `<div class='resultsTop flex-spaced-between' style='text-align:left;'></div> <div name='resultsBigContainer' class='flex-row'> <div id='categories'><p id="editName" class="flex-spaced-between">Client <span class="textRight">✏️</span></p><p id="editEmail" class="flex-spaced-between">E-Mail <span class="textRight">✏️</span></p><p id="editAddress" class="flex-spaced-between">Address <span class="textRight">✏️</span></p><p id="editTelephone" class="flex-spaced-between">Telephone <span class="textRight">✏️</span></p><p>Pets</p><button id="editPets">Edit Pets</button></div><div id='results'><div id="containName"><p>${data.name}</p></div><div id="containEmail"><p id="editEmail">${data.email}</p></div> <div id="containAddress"><p id="editAddress">${data.address}</p></div> <div id="containTelephone"><p id="editTelephone">${data.telephone}</p></div></div> </div>`
             managementDiv.append(customerResults);
             let results = document.getElementById('results');
             const petInfo = data.pets.map((pet) => `<p>${pet.name}: ${pet.species} </p><p class="petList"><button onclick="remove(${pet.id})">Remove</button> <button onclick="viewBookings(${pet.id})">View Appointments</button></p>`);
@@ -868,6 +868,24 @@ function addToOwner(user, pet){
 }
 
 function addNewPet(data){
+    document.getElementById("addPet").classList.toggle("notVisible");
+    if(document.getElementById("ownerP")){
+        document.getElementById("ownerP").remove()
+    }
+    
+    if(data){
+        const ownerP = document.createElement("p")
+        const node = document.getElementById("lastNode")
+        ownerP.setAttribute("Id", "ownerP")
+        ownerP.innerHTML = `<div class="flex-spaced-apart">
+        <label for="petBreed">User</label><p>${data.name}</p> 
+        </div>`
+        node.parentNode.insertBefore(ownerP, node.nextSibling);
+    }
+    else {
+        
+        console.log("add new pet")
+    }
     
 }
 
@@ -939,7 +957,7 @@ function submitUserEdits(id, value, field){
 
 function editUser(data, field) {
     if (field === "name") {
-    nameDiv = document.querySelector(".resultsTop")
+    nameDiv = document.getElementById("containName")
     nameDiv.innerHTML = `<input id="nameInput" type="text" value="${data.name}" class="clearInput">`
     nameInput = document.getElementById("nameInput")
     nameInput.focus();

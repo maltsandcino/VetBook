@@ -9,12 +9,12 @@
         <button class="twenty">Manage existing client </button>
     </div>
    
-    <div class="pet" onclick="managePet">
+    <div class="pet" onclick="addClient()">
         <button class="twenty">Add a new client</button>
     </div>
  
     <div class="pet" onclick="addNewPet()">
-        <button class="twenty">Add a new pet</button>
+        <button class="twenty" id="noUser">Add a new pet</button>
     </div>
 </div>
 
@@ -23,8 +23,8 @@
     {% csrf_token %}
     <!-- <label for=""></label> -->
 </div>
-
-<div id="managePets" class="notVisible flex-spaced"><button id="addExisting">Add Existing Pets</button><button id="createNew">Add New Pet</Button></div>
+<div id="above"></div>
+<div id="managePets" class="notVisible flex-spaced"><button id="addExisting" class="marginsAuto width-forty">Add Existing Pets</button><button id="createNew" class="marginsAuto width-forty">Add New Pet</Button></div>
 <div id="bg"></div>
 <div id="addPet" class="modal notVisible flex-column fortyVW">
     <div class="hundredW flex-end">
@@ -47,6 +47,31 @@
     </div>
     <button style="width: 30%; margin: auto;" id="newPetSubmit">Submit</button>
 </div>
+
+<div id="addClient" class="modal notVisible flex-column fortyVW">
+    <div class="hundredW flex-end">
+    <div style="margin-bottom: 0px; text-align: center; width: 20px;" class="highlight" title="Close" id="close">X</div>
+    </div>
+    <h6 class="centerText">Add a new client to the system below</h6>
+    <div class="flex-row threeQuartersHeight">
+        <div id="leftAdd" class="flex-wrap-column hundredW">
+            <div class="flex-spaced-apart">
+                <label for="clientName" class="hundredPixels">Name</label> <input id="clientName" type="text" name="clientName">
+            </div>
+            <div class="flex-spaced-apart">
+                <label for="clientTelephone">Telephone</label><input id="clientTelephone" type="text" name="clientTelephone">
+            </div>
+            <div class="flex-spaced-apart">
+                <label for="clientAddress">Address</label><input id="clientAddress" type="text" name="clientAddress"> 
+            </div>
+            <div class="flex-spaced-apart">
+                <label for="clientEmail">Email</label><input id="clientEmail" type="text" name="clientEmail"> 
+            </div>              
+        </div>
+        
+    </div>
+    <button style="width: 30%; margin: auto;" id="newClientSubmit">Submit</button>
+</div> 
 {% endblock %}
 
 <!-- Add javascript to make the Div visible in order to add and remove pets and customers as well as update them-->

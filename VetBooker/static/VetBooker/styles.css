@@ -49,6 +49,13 @@ button:hover {
     justify-content: center;
 }
 
+.flex-center-gap {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+}
+
 .fifty {
     width: 50%;
 }
@@ -366,4 +373,10 @@ td:nth-child(even) {
     align-items: center;
     padding: 0;
     margin: 0;
+}
+
+.width-forty {
+   
+    width: 30%;
+    min-width: 100px;
 }

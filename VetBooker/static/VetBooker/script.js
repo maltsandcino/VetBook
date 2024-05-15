@@ -784,7 +784,11 @@ function showPetsModal(data) {
     }
 
     const newPetHandler = (event) => {
+        
         document.getElementById("createNew").removeEventListener('click', newPetHandler);
+        if(data){
+            document.getElementById("createNew").addEventListener('click', newPetHandler)
+        }
         addNewPet(data);
     }
     
@@ -792,6 +796,9 @@ function showPetsModal(data) {
         document.getElementById("createNew").addEventListener('click', newPetHandler);
         document.getElementById("createNew").hasEventListener = true;
     }
+
+
+
     document.getElementById("managePets").classList.toggle('notVisible');
     document.getElementById("addExisting").addEventListener('click', (event) => {getExistingPet(data)});
 
@@ -836,10 +843,10 @@ function getExistingPet(data){
     const existingPets = document.createElement('div');
     existingPets.classList = "flex-center-wrap"
     existingPets.id = "existingPets"
-    existingPets.innerHTML = `<div class="hundredW" id="selectContainer"><select class="marginAuto" name="petSelect" id="petSelect"></select><button id="addExisting">Submit Change</button></div>`;
-    existingPets.innerHTML += document.getElementById("managePets").innerHTML;
-    document.getElementById("managePets").innerHTML = "";
-    document.getElementById("managePets").append(existingPets);
+    existingPets.innerHTML = `<div class="hundredW" id="selectContainer"><select class="marginAuto" name="petSelect" id="petSelect"></select><button id="submitAddExisting">Submit Change</button></div>`;
+    // existingPets.innerHTML += document.getElementById("managePets").innerHTML;
+    document.getElementById("above").innerHTML = "";
+    document.getElementById("above").append(existingPets);
     
     data.options.forEach(option => {
         
@@ -851,7 +858,7 @@ function getExistingPet(data){
         selectList.appendChild(object)
    
     });
-    document.getElementById("addExisting").addEventListener("click", () => {
+    document.getElementById("submitAddExisting").addEventListener("click", () => {
         pet_id = document.getElementById("petSelect").value
         addToOwner(user_id, pet_id);
     })
@@ -889,6 +896,68 @@ function addToOwner(user, pet){
 }
 
 function addNewPet(data){
+    console.log("addNewPet")
+    if(data === undefined){
+        console.log("data undefined")
+        var closeData = data
+    }
+    let bg = document.getElementById("bg")
+    bg.classList.toggle("bg")
+    document.getElementById("addPet").classList.toggle("notVisible");
+    if(document.getElementById("ownerP")){
+        document.getElementById("ownerP").remove()
+    }
+    
+    if(data){
+        const ownerP = document.createElement("p")
+        const node = document.getElementById("lastNode")
+        ownerP.setAttribute("Id", "ownerP")
+        ownerP.setAttribute("data-owner", `${data.id}`)
+        ownerP.innerHTML = `<div class="flex-spaced-apart">
+        <label for="petBreed" data-owner="${data.id}">User</label><p>${data.name}</p> 
+        </div>`
+        node.parentNode.insertBefore(ownerP, node.nextSibling);
+    }
+    else {
+        let data = "none"
+    }
+    const submitButton = document.getElementById("newPetSubmit")
+
+    const handlePet = (event) => { 
+        submitPet(data);
+        submitButton.removeEventListener('click', handlePet)
+    }
+     
+     submitButton.addEventListener('click', handlePet);
+    
+     //Making sure the div can close
+     const closeButton = document.getElementById("close")
+
+     identity = event.target.id
+     
+
+     const closeNewPetModal = (event) => {
+        let bg = document.getElementById("bg");
+        bg.classList.toggle("bg");
+        document.getElementById("addPet").classList.toggle("notVisible");
+        submitButton.removeEventListener('click', handlePet)
+        closeButton.removeEventListener('click', closeNewPetModal)
+        
+        reload = document.getElementById("createNew");
+        
+      
+        }
+
+
+    closeButton.addEventListener('click', closeNewPetModal);
+    
+}
+
+function reAdd(data){
+    
+}
+
+function addClient(data){
     console.log("addNewPet")
 
     let bg = document.getElementById("bg")
@@ -939,6 +1008,7 @@ function addNewPet(data){
 }
 
 //todo: handle multiple eventlisteners being added.
+
 
 async function submitPet(){
 

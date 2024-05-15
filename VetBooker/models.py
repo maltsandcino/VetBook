@@ -41,22 +41,6 @@ class Client(models.Model):
     bills = models.ManyToManyField("Bill", related_name="bills", blank=True)
     def __str__(self):
         return self.name
-    
-    # def serialize(self):
-    #     class PetSerializer(serializers.ModelSerializer):
-    #         class Meta:
-    #             model = Pet
-    #             fields = ('id', 'name', 'species')
-
-    #     class ClientSerializer(serializers.ModelSerializer):
-    #         pet = PetSerializer(read_only=True, many=True)
-    #         class Meta:
-    #             model = Client
-    #             fields = '__all__'
-
-    #     return ClientSerializer(self).data
-    
-    # implementing my own serialization without relying on the REST framework. This results in a much better JSON object!
 
     def serialize(self):
         pet_query_set = Pet.objects.filter(owner=self)

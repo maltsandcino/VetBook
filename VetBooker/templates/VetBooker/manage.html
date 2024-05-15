@@ -3,21 +3,21 @@
 {% block body %}
 
     <h3 class="pageTitle">Client Management</h3>
-    <div class="centerText">
-<div class="flex-spaced">
+  
+<div class="flex-spaced wrap">
     <div class="customer" onclick="manageCustomer()">
         <button class="twenty">Manage existing client </button>
     </div>
-    <br>
+   
     <div class="pet" onclick="managePet">
         <button class="twenty">Add a new client</button>
     </div>
-    <br>
+ 
     <div class="pet" onclick="addNewPet()">
         <button class="twenty">Add a new pet</button>
     </div>
 </div>
-</div>
+
 <br>
 <div id="managementDiv" class="notVisible flex-column fortyVW"><br>
     {% csrf_token %}
@@ -28,7 +28,7 @@
 <div id="bg"></div>
 <div id="addPet" class="modal notVisible flex-column fortyVW">
     <div class="hundredW flex-end">
-    <div style="margin-bottom: 0px; text-align: center; width: 20px;" class="highlight" title="Close" onclick="closeNewPetModal()">X</div>
+    <div style="margin-bottom: 0px; text-align: center; width: 20px;" class="highlight" title="Close" id="close">X</div>
     </div>
     <h6 class="centerText">Add a new pet to the system below</h6>
     <div class="flex-row threeQuartersHeight">
@@ -40,12 +40,12 @@
             <label for="petSpecies">Species</label><input id="petSpecies" type="text" name="petSpecies">
             </div>
             <div class="flex-spaced-apart" id="lastNode">
-            <label for="petBreed">Breed</label><input id="petSpecies" type="text" name="petBreed"> 
+            <label for="petBreed">Breed</label><input id="petBreed" type="text" name="petBreed"> 
             </div>       
         </div>
         
     </div>
-    <button style="width: 30%; margin: auto;">Submit</button>
+    <button style="width: 30%; margin: auto;" id="newPetSubmit">Submit</button>
 </div>
 {% endblock %}
 

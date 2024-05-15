@@ -13,6 +13,42 @@ from datetime import date, timedelta, datetime
 
 
 # Create your views here.
+class tempBooking:
+        def __init__(self, title, vet, pet, client, day, start_time, duration, comments):
+            self.title = title
+            self.vet = vet
+            self.pet = pet
+            self.client = client
+            self.day = day
+            self.start_time = start_time
+            self.duration = duration
+            self.comments = comments
+        
+        def __str__(self):
+            return f"Booking({self.title}, {self.vet})"
+
+def pet_appointments(request, pet_id):        
+
+    pet = Pet.objects.get(id=pet_id)
+    client = pet.owner
+    print(client)
+    tel = client.telephone 
+    client_name = client.name
+
+    bookings = Booking.objects.filter(Pet=pet)
+    booking_list = []
+    
+    for booking in bookings:
+        day_string = str(booking.day)
+        day_string = day_string[5:7] + day_string[4] + day_string[8:] + day_string[4] + day_string[0:4]
+        day_names = list(calendar.day_abbr)
+        day_name = day_names[date.weekday(booking.day)]
+        day_string = f"{day_name} {day_string}"
+        temp_booking = tempBooking(booking.title, booking.vet, pet, booking.Client, day_string, str(booking.start_time)[0:5], booking.duration, booking.comments)
+        booking_list.append(temp_booking)
+    
+    return render(request, "VetBooker/petSearch.html", {"bookings": booking_list, "name": client_name, "telephone": tel, "petName": pet.name})
+
 
 def generate_appointments(request):
     if request.method == "POST":
@@ -244,7 +280,7 @@ def add_booking(request):
         return JsonResponse({"message":"More information is necessary for this path", "status": "200", "name": pet_name, "id": new_booking.id}, status=200) 
     return JsonResponse({"message":"More information is necessary for this path", "status": "400"}, status=400)
 
-                                                                ##TO DO: Finish appointment view page(s)
+
 def view_specific_booking(request, booking_id):
     ###Getting all relevant booking information
     booking_id = int(booking_id)
@@ -572,6 +608,33 @@ def add_owner(request):
         return JsonResponse(user.serialize(), status=200)
     
     return JsonResponse({"message":"Pet not found"}, status=400)
+
+def add_pet(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        name = data.get("name")
+        owner = data.get("owner")
+        print(owner)
+        species = data.get("species")
+        breed = data.get("breed")
+        
+        if owner == "None":
+            new_pet = Pet(name=name, species=species, breed=breed)
+            new_pet.save()
+            
+            return JsonResponse({"message": "this seems to work", "name": name}, status=200)
+        else:
+
+            owner = Client.objects.get(id=owner)
+            print(owner)
+            new_pet = Pet(name=name, species=species, breed=breed, owner=owner)
+            new_pet.save()
+            
+            return JsonResponse({"message": "this seems to work", "name": name}, status=200)
+
+    return JsonResponse({"message": "this seems to work"}, status=200)
+        
+    pass
 
 
 def manage(request):

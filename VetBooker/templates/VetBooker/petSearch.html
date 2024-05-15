@@ -1,0 +1,41 @@
+{% extends "VetBooker/layout.html" %}
+{% load static %}
+{% block body %}
+{% csrf_token %}
+
+<h3 class="pageTitle">Pet Appointment Search</h3>
+
+<!-- <div class="flex-column fortyVW marginsAuto">
+    <div class="flex-spaced-between">
+        <label for="clientTel">
+            Client Telephone
+        </label>
+        <input type="text" id="clientTel" name="clientTel">
+    </div>
+    <br>
+    <button id="search">Check Client Appointments</button>
+</div> -->
+
+<br>
+<div class="fortyVW flex-row marginsAuto flex-spaced" id="nameContainer" ><h6 style="width: 100%;"><p class="flex-spaced-between"><span>Checking appoinments for: </span><span id="name">{{petName}}</span></p> <p class="flex-spaced-between"><span>Owner: </span><span id="owner">{{ name }}</span></p></h6></div>
+
+
+<div class="fortyVW flexGallery marginsAuto" id="appointmentContainer">
+    <div id="appointmentGallery" style="width: 100%;">
+        {% for booking in bookings %}
+        <div class="appointmentDiv flex-spaced" style="padding: 3px;">
+            <div class="fifty">
+                <p>Subject:</p>
+                <p>Day:</p>
+                <p>Time:</p>
+                <p>Duration:</p></div>
+            <div class="fifty">
+                <p>{{booking.title}}</p>
+                <p>{{booking.day}}</p>
+                <p>{{booking.start_time}}</p>
+                <p>{{booking.duration}} Minutes</p></div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

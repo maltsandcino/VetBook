@@ -12,6 +12,7 @@ urlpatterns = [
     path("appointment/<str:booking_id>", views.view_specific_booking, name="view_specific_booking"),
     path("schedule", views.schedule, name="schedule"),
     path("clientAppointments", views.appointments, name="appointments"),
+    path("petAppointments/<str:pet_id>", views.pet_appointments, name="pet_appointments"),
 
 
     # API ROUTING
@@ -26,6 +27,7 @@ urlpatterns = [
     path("customTimes", views.custom_times, name="custom_times"),
     path("addappointment", views.add_booking, name="add_booking"),
     path("generateAppointments", views.generate_appointments, name="generate_appointments"),
+    path("addPet", views.add_pet, name="add_pet"),
     
        
 ]

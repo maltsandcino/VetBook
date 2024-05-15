@@ -213,6 +213,7 @@ label {
 .twenty {
     margin: auto;
     width: 15vw;
+    min-width: 180px;
 }
 .hoverClick:hover {
     cursor: pointer;
@@ -346,4 +347,13 @@ td:nth-child(even) {
 .thirtyVW {
     width: 35vw;
     height: 35vh;
+}
+
+.wrap {
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin: 0;
 }

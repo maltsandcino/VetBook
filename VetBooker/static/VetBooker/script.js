@@ -685,6 +685,9 @@ function appointmentSearch(e, customDay, direction){
 }
 
 function manageCustomer() {
+    if(!document.getElementById("managePets").classList.contains("notVisible")){
+        document.getElementById("managePets").classList.toggle("notVisible");
+    }
     let managementDiv = document.querySelector("#managementDiv");
     managementDiv.innerHTML = "";
     managementDiv.classList.toggle('notVisible');
@@ -733,6 +736,12 @@ function manageCustomerSearch(args) {
         }
         else {
             alert("Customer not found, please review telephone number.");
+            if(!document.getElementById("managePets").classList.contains("notVisible")){
+                document.getElementById("managePets").classList.toggle("notVisible");
+            }
+            customerResults = document.querySelector(".customerResults")
+            customerResults.innerHTML = "";
+            return { then: function() {} }
         }
     })
     .then(data => {
@@ -743,7 +752,7 @@ function manageCustomerSearch(args) {
             customerResults.innerHTML = `<div class='resultsTop' style='text-align:left;'></div> <div name='resultsBigContainer' class='flex-row'> <div id='categories'><p id="editName" class="flex-spaced-between">Client <span class="textRight">✏️</span></p><p id="editEmail" class="flex-spaced-between">E-Mail <span class="textRight">✏️</span></p><p id="editAddress" class="flex-spaced-between">Address <span class="textRight">✏️</span></p><p id="editTelephone" class="flex-spaced-between">Telephone <span class="textRight">✏️</span></p><p>Pets</p><button id="editPets">Edit Pets</button></div><div id='results'><div containName><p>${data.name}</p></div><div id="containEmail"><p>${data.email}</p></div> <div id="containAddress"><p>${data.address}</p></div> <div id="containTelephone"><p>${data.telephone}</p></div></div> </div>`
             managementDiv.append(customerResults);
             let results = document.getElementById('results');
-            const petInfo = data.pets.map((pet) => `<p>${pet.name}: ${pet.species} </p><p class="petList"> <button onclick="remove(${pet.id})">Remove</button> <button onclick="viewBookings(${pet.id})">View Appointments</button></p>`);
+            const petInfo = data.pets.map((pet) => `<p>${pet.name}: ${pet.species} </p><p class="petList"> <button onclick="remove(${pet.id})">Remove</button><a href="./petAppointments/${pet.id}"><button>View Appointments</button></a></p>`);
             results.innerHTML += petInfo.join('');
             editPetsEvent = document.getElementById('editPets').addEventListener("click", (event) => {showPetsModal(data);});
             editNameEvent = document.getElementById('editName').addEventListener("click", (event) => {editUser(data, "name");});
@@ -757,7 +766,7 @@ function manageCustomerSearch(args) {
             customerResults.innerHTML = `<div class='resultsTop flex-spaced-between' style='text-align:left;'></div> <div name='resultsBigContainer' class='flex-row'> <div id='categories'><p id="editName" class="flex-spaced-between">Client <span class="textRight">✏️</span></p><p id="editEmail" class="flex-spaced-between">E-Mail <span class="textRight">✏️</span></p><p id="editAddress" class="flex-spaced-between">Address <span class="textRight">✏️</span></p><p id="editTelephone" class="flex-spaced-between">Telephone <span class="textRight">✏️</span></p><p>Pets</p><button id="editPets">Edit Pets</button></div><div id='results'><div id="containName"><p>${data.name}</p></div><div id="containEmail"><p id="editEmail">${data.email}</p></div> <div id="containAddress"><p id="editAddress">${data.address}</p></div> <div id="containTelephone"><p id="editTelephone">${data.telephone}</p></div></div> </div>`
             managementDiv.append(customerResults);
             let results = document.getElementById('results');
-            const petInfo = data.pets.map((pet) => `<p>${pet.name}: ${pet.species} </p><p class="petList"><button onclick="remove(${pet.id})">Remove</button> <button onclick="viewBookings(${pet.id})">View Appointments</button></p>`);
+            const petInfo = data.pets.map((pet) => `<p>${pet.name}: ${pet.species} </p><p class="petList"><button onclick="remove(${pet.id})">Remove</button><a href="./petAppointments/${pet.id}"><button>View Appointments</button></a></p>`);
             results.innerHTML += petInfo.join('');
             editPetsEvent = document.getElementById('editPets').addEventListener("click", (event) => {showPetsModal(data);});
             editNameEvent = document.getElementById('editName').addEventListener("click", (event) => {editUser(data, "name");});
@@ -769,12 +778,24 @@ function manageCustomerSearch(args) {
      })
 }
 function showPetsModal(data) {
+    console.log("showPetsModal")
     if(document.getElementById("selectContainer")){document.getElementById("selectContainer").classList.toggle("notVisible");
 
     }
+
+    const newPetHandler = (event) => {
+        document.getElementById("createNew").removeEventListener('click', newPetHandler);
+        addNewPet(data);
+    }
+    
+    if(!document.getElementById("createNew").hasEventListener){
+        document.getElementById("createNew").addEventListener('click', newPetHandler);
+        document.getElementById("createNew").hasEventListener = true;
+    }
     document.getElementById("managePets").classList.toggle('notVisible');
     document.getElementById("addExisting").addEventListener('click', (event) => {getExistingPet(data)});
-    document.getElementById("createNew").addEventListener('click', (event) => {addNewPet(data)});
+
+    
 }
 
 function getExistingPet(data){
@@ -867,13 +888,9 @@ function addToOwner(user, pet){
         })
 }
 
-function closeNewPetModal(){
-    let bg = document.getElementById("bg")
-    bg.classList.toggle("bg")
-    document.getElementById("addPet").classList.toggle("notVisible");
-}
-
 function addNewPet(data){
+    console.log("addNewPet")
+
     let bg = document.getElementById("bg")
     bg.classList.toggle("bg")
     document.getElementById("addPet").classList.toggle("notVisible");
@@ -885,16 +902,86 @@ function addNewPet(data){
         const ownerP = document.createElement("p")
         const node = document.getElementById("lastNode")
         ownerP.setAttribute("Id", "ownerP")
+        ownerP.setAttribute("data-owner", `${data.id}`)
         ownerP.innerHTML = `<div class="flex-spaced-apart">
-        <label for="petBreed">User</label><p>${data.name}</p> 
+        <label for="petBreed" data-owner="${data.id}">User</label><p>${data.name}</p> 
         </div>`
         node.parentNode.insertBefore(ownerP, node.nextSibling);
     }
     else {
-        
-        console.log("add new pet")
+        let data = "none"
+    }
+    const submitButton = document.getElementById("newPetSubmit")
+
+    const handlePet = (event) => { 
+    
+    
+        submitPet(data);
+        submitButton.removeEventListener('click', handlePet)
+    }
+     
+     submitButton.addEventListener('click', handlePet);
+    
+     //Making sure the div can close
+     const closeButton = document.getElementById("close")
+
+     const closeNewPetModal = (event) => {
+        let bg = document.getElementById("bg");
+        bg.classList.toggle("bg");
+        document.getElementById("addPet").classList.toggle("notVisible");
+        submitButton.removeEventListener('click', handlePet)
+        closeButton.removeEventListener('click', closeNewPetModal)
+    }
+
+    closeButton.addEventListener('click', closeNewPetModal);
+    
+    
+}
+
+//todo: handle multiple eventlisteners being added.
+
+async function submitPet(){
+
+    petName = document.getElementById("petName").value
+    petSpecies = document.getElementById("petSpecies").value
+    petBreed = document.getElementById("petBreed").value
+    
+
+    if(document.getElementById("ownerP")){
+        owner = document.getElementById("ownerP").dataset.owner
+    }
+    else{
+        owner = "None"
     }
     
+    let response = await fetch('/addPet', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': `${document.cookie.split('=').pop()}`
+        },
+        body: JSON.stringify({
+            name: petName,
+            species: petSpecies,
+            breed: petBreed,
+            owner: owner
+        })
+    });
+
+    try {const result = await response.json()
+
+        console.log(result.name)
+    if (document.getElementById("ownerP")){
+        manageCustomerSearch()
+    }
+        let bg = document.getElementById("bg");
+        bg.classList.toggle("bg");
+        document.getElementById("addPet").classList.toggle("notVisible");
+    }
+    catch (error) {
+        console.log(error)
+    }
+
 }
 
 function remove(petid) {
@@ -929,7 +1016,63 @@ function remove(petid) {
     }
 }
 
-function viewBookings(petid){
+async function viewBookings(petid){
+    let clientTel = document.getElementById("editTelephone").innerHTML;
+    clientTel = parseInt(clientTel)
+    console.log(clientTel)
+    
+    let mainDiv = document.getElementById("appointmentContainer");
+    mainDiv.innerHTML = '<div id="appointmentGallery"></div>'
+
+    let response = await fetch('/petAppointments', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': `${document.cookie.split('=').pop()}`
+        },
+        body: JSON.stringify({
+            client: clientTel,
+            pet: petid,
+        })
+    });
+    try {const result = await response.json()
+     
+        let bookings = result.bookings
+        console.log(result.bookings)
+        document.getElementById("nameContainer").classList.toggle("notVisible")
+        document.getElementById("name").innerHTML = `${result.petName}`;
+       
+        if(result.bookings){
+        for (const [i, value] of Object.entries(bookings)) {
+            let sibDiv = document.getElementById("appointmentGallery");
+            let aDiv = document.createElement('div');
+            aDiv.classList.add("appointmentDiv");
+            aDiv.classList.add("flex-spaced")
+            aDiv.id = `appointment_${i}`;
+            aDiv.innerHTML = `<div class="fifty"><p>Subject:</p>
+                                <p>Day:</p>
+                                    <p>Time:</p>
+                                    <p>Duration:</p></div>
+                                <div class="fifty">
+                                <p>${value[0]}</p>
+                                <p>${value[1]}</p>
+                                <p>${value[2]}</p>
+                                <p>${value[3]} Minutes</p></div>`
+            aDiv.addEventListener('click', function() {window.location.href = `./appointment/${value[4]}`})
+            sibDiv.parentNode.insertBefore(aDiv, sibDiv);
+        }}      
+        
+        // bookings.forEach(function (booking) {
+        //     console.log(booking);
+        // });
+    
+    }
+    catch (error) {
+        if(!document.getElementById("nameContainer").classList.contains("notVisible")){
+            document.getElementById("nameContainer").classList.toggle("notVisible")
+        }
+        console.log(error)
+    }
     
 }
 

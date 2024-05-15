@@ -88,6 +88,16 @@ button:hover {
     justify-content: space-around;
 }
 
+.undecorated {
+    text-decoration: none;
+    color: inherit;
+}
+
+.min240 {
+    min-width: 240px;
+    max-width: 510px;
+}
+
 .flexGallery {
     margin-top: 20px;
     display: flex;

@@ -14,7 +14,7 @@ from datetime import date, timedelta, datetime
 
 # Create your views here.
 class tempBooking:
-        def __init__(self, title, vet, pet, client, day, start_time, duration, comments):
+        def __init__(self, title, vet, pet, client, day, start_time, duration, comments, id):
             self.title = title
             self.vet = vet
             self.pet = pet
@@ -23,6 +23,7 @@ class tempBooking:
             self.start_time = start_time
             self.duration = duration
             self.comments = comments
+            self.id = id
         
         def __str__(self):
             return f"Booking({self.title}, {self.vet})"
@@ -44,7 +45,7 @@ def pet_appointments(request, pet_id):
         day_names = list(calendar.day_abbr)
         day_name = day_names[date.weekday(booking.day)]
         day_string = f"{day_name} {day_string}"
-        temp_booking = tempBooking(booking.title, booking.vet, pet, booking.Client, day_string, str(booking.start_time)[0:5], booking.duration, booking.comments)
+        temp_booking = tempBooking(booking.title, booking.vet, pet, booking.Client, day_string, str(booking.start_time)[0:5], booking.duration, booking.comments, booking.id)
         booking_list.append(temp_booking)
     
     return render(request, "VetBooker/petSearch.html", {"bookings": booking_list, "name": client_name, "telephone": tel, "petName": pet.name})

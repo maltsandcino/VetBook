@@ -10,6 +10,7 @@ from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
 from datetime import date, timedelta, datetime
+import re
 
 
 # Create your views here.
@@ -519,6 +520,7 @@ def c_search(request):
     if request.method == "POST":
         data = json.loads(request.body)
         number = data.get("number", "")
+        number = re.sub("[^0-9]", "", number)
 
         client = Client.objects.get(telephone=number)
 
@@ -548,6 +550,13 @@ def client_edit(request):
                 client.save()
                 return JsonResponse({"message": "Name Updated."}, status=200)
             if field_to_edit == "telephone":
+                new_value = re.sub("[^0-9]", "", new_value)
+                try:
+                    existing_record = Client.objects.get(telephone=new_value)
+                    if existing_record:
+                        return JsonResponse({"error": "One or more fields contains an error."}, status=501)
+                except:
+                    pass
                 client.telephone = new_value
                 client.save()
                 return JsonResponse({"message": "Telephone Updated."}, status=200)
@@ -561,8 +570,33 @@ def client_edit(request):
                 return JsonResponse({"message": "Address Updated."}, status=200)
 
     
-    return JsonResponse({"error": "POST request required."})
+    return JsonResponse({"error": "POST request required.", "message": "One or more fields contains an error."}, status=400)
         
+def add_customer(request):
+    
+    if request.method == "POST":
+        data = json.loads(request.body)
+        tel = data.get("telephone")
+        name = data.get("name")
+        name = name.strip()
+        email = data.get("email")
+        email = email.strip()
+        address = data.get("address")
+        address = address.strip()
+        tel = re.sub("[^0-9]", "", tel)
+        try:
+            existing_client = Client.objects.get(telephone=tel)
+            if existing_client:
+                return JsonResponse({"error": "Client already exists with this telephone number"}, status=501)
+        except:
+            pass
+        new_customer = Client(name=name, telephone=tel, email=email, address=address)
+        print(new_customer)
+        new_customer.save()
+        return JsonResponse({"message": "New Client successfully created", "tel": tel}, status=200)
+
+        
+    return JsonResponse({"error": "POST request required."}, status=400)
 
 def pet_removal(request):
     if request.method == "POST":

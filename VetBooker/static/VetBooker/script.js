@@ -684,7 +684,7 @@ function appointmentSearch(e, customDay, direction){
     
 }
 
-function manageCustomer() {
+function manageCustomer(args) {
     if(!document.getElementById("managePets").classList.contains("notVisible")){
         document.getElementById("managePets").classList.toggle("notVisible");
     }
@@ -703,6 +703,10 @@ function manageCustomer() {
           manageCustomerSearch();
         }
     })
+    if(args){
+        document.getElementById('numberSearch').value = args
+        manageCustomerSearch()
+    }
 }
 
 function manageCustomerSearch(args) {
@@ -713,7 +717,8 @@ function manageCustomerSearch(args) {
         document.getElementById("managePets").innerHTML = `<button id="addExisting">Add Existing Pets</button><button id="createNew">Add New Pet</Button>`
         
     }
-    let clientNumber = document.getElementById('numberSearch').value.replace(/\s/g, '');
+   
+    clientNumber = document.getElementById('numberSearch').value.replace(/\s/g, '');
     
     if (args) {
         clientNumber = args
@@ -953,56 +958,115 @@ function addNewPet(data){
     
 }
 
-function reAdd(data){
-    
+//todo: push data to server, handle
+
+async function submitClient(){
+
+    let name = document.getElementById("clientName").value
+    let telephone = document.getElementById("clientTelephone").value
+    let address = document.getElementById("clientAddress").value
+    let email = document.getElementById("clientEmail").value
+
+    if (!name){
+        document.getElementById("clientName").focus()
+        alert("Please include a name")
+        return { then: function() {} }
+    }
+    if (!telephone){
+        document.getElementById("clientTelephone").focus()
+        alert("Please include a telephone number")
+        return { then: function() {} }
+    }
+    if (!address){
+        document.getElementById("clientAddress").focus()
+        alert("Please include an address")
+        return { then: function() {} }
+    }
+    console.log(email.indexOf("."))
+
+    if (email && email.indexOf("@") < 0){
+        
+        alert("Email address is invalid.")
+        return { then: function() {} }
+    }
+    if ( email && email.lastIndexOf(".") < email.indexOf("@")){
+        alert("Email address is invalid.")
+        return { then: function() {} }
+    }
+
+    let response = await fetch('/addCustomer', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFTOKEN': `${document.cookie.split('=').pop()}`
+        },
+        body: JSON.stringify({
+            name: name,
+            telephone: telephone,
+            address: address,
+            email: email,
+        })
+    });
+    if(response.ok){
+    try {const result = await response.json()
+
+        console.log(result.message)
+        let bg = document.getElementById("bg");
+        bg.classList.toggle("bg");
+        document.getElementById("addClient").classList.toggle("notVisible");
+        console.log(result.tel);
+        newTel = parseInt(result.tel);
+        manageCustomer(newTel)
+    }
+    catch (error) {
+        console.log("Error")
+    }}
+    else{
+        if(response.status === 501){
+            console.log("status 501")
+            alert("A client with this telephone number already exists.")
+            document.getElementById("clientTelephone").focus()
+        }
+        
+        console.log("Please verify the information provided.")
+    }
 }
 
-function addClient(data){
-    console.log("addNewPet")
+function addClient(){
+
+    document.getElementById("clientName").value = ""
+    document.getElementById("clientTelephone").value = ""
+    document.getElementById("clientAddress").value = ""
+    document.getElementById("clientEmail").value = ""
 
     let bg = document.getElementById("bg")
     bg.classList.toggle("bg")
-    document.getElementById("addPet").classList.toggle("notVisible");
-    if(document.getElementById("ownerP")){
-        document.getElementById("ownerP").remove()
-    }
+    document.getElementById("addClient").classList.toggle("notVisible");
     
-    if(data){
-        const ownerP = document.createElement("p")
-        const node = document.getElementById("lastNode")
-        ownerP.setAttribute("Id", "ownerP")
-        ownerP.setAttribute("data-owner", `${data.id}`)
-        ownerP.innerHTML = `<div class="flex-spaced-apart">
-        <label for="petBreed" data-owner="${data.id}">User</label><p>${data.name}</p> 
-        </div>`
-        node.parentNode.insertBefore(ownerP, node.nextSibling);
-    }
-    else {
-        let data = "none"
-    }
-    const submitButton = document.getElementById("newPetSubmit")
+    const submitButton = document.getElementById("newClientSubmit")
 
-    const handlePet = (event) => { 
+    const handleClient = (event) => { 
     
-    
-        submitPet(data);
-        submitButton.removeEventListener('click', handlePet)
+        submitClient();
+        submitButton.removeEventListener('click', handleClient);
+        submitButton.addEventListener('click', handleClient);
+        
     }
      
-     submitButton.addEventListener('click', handlePet);
+     submitButton.addEventListener('click', handleClient);
     
      //Making sure the div can close
-     const closeButton = document.getElementById("close")
+     const closeButton = document.getElementById("closeClient")
 
-     const closeNewPetModal = (event) => {
+     const closeNewClientModal = (event) => {
         let bg = document.getElementById("bg");
         bg.classList.toggle("bg");
-        document.getElementById("addPet").classList.toggle("notVisible");
-        submitButton.removeEventListener('click', handlePet)
-        closeButton.removeEventListener('click', closeNewPetModal)
+        document.getElementById("addClient").classList.toggle("notVisible");
+        submitButton.removeEventListener('click', handleClient)
+        closeButton.removeEventListener('click', closeNewClientModal)
     }
 
-    closeButton.addEventListener('click', closeNewPetModal);
+    closeButton.addEventListener('click', closeNewClientModal);
     
     
 }
@@ -1164,9 +1228,15 @@ function submitUserEdits(id, value, field){
              return response.json();
         }
          else {
-             alert("not implemented."); 
+            if(response.status === 501){
+             alert("Please verify the telephone number."); 
+             return { then: function() {} }}
+             else{
+                alert("Please verify the information provided.");
+                return { then: function() {} }}
+             }
          }
-    })
+    )
     .then(data => {
         if (field === "telephone"){
             manageCustomerSearch(value)

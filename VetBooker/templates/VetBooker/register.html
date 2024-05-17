@@ -2,4 +2,71 @@
 {% load static %}
 {% block body %}
 
+<h3 class="pageTitle">Register for a user Account</h3>
+<br>
+<h6 class="centerText">Fill in your information to request a new user account for VetBooker.</h6>
+<br>
+<p class="centerText margin-top">Once your account is approved, you will be able to login and access all aspects of the VetBooker app.</p>
+
+<!-- username = request.POST["username"]
+        email = request.POST["email"]
+        first_name = request.POST["firstName"]
+        last_name = request.POST["lastName"]
+
+        # Ensure password matches confirmation
+        password = request.POST["password"]
+        confirmation = request.POST["confirmation"] -->
+        {% if message %}
+        <div class="largeWarning">
+            {{ message }}
+        </div>
+        {% endif %}
+
+
+<fieldset class="flex-wrap-column-register fortyVW marginsAuto min240">
+    <form action="./register" method="post">
+        {% csrf_token %}
+        <div class="flex-spaced-apart margin-top">
+            <label for="username">
+                Username
+            </label>
+            <input type="text" name="username" id="username">
+        </div>
+        <div class="flex-spaced-apart margin-top">
+            <label for="firstName">
+                First Name
+            </label>
+            <input type="text" name="firstName" id="firstName">
+        </div>
+        <div class="flex-spaced-apart margin-top">
+            <label for="lastName">
+                Last Name
+            </label>
+            <input type="text" name="lastName" id="lastName">
+        </div>
+        <div class="flex-spaced-apart margin-top">
+            <label for="password">
+                Password
+            </label>
+        <input type="password" name="password" id="password">
+        </div>
+            <div class="flex-spaced-apart margin-top">
+            <label for="confirmation">
+                Confirm Password
+            </label>
+            <input type="password" name="confirmation" id="confirmation">
+        </div>
+        <div class="flex-spaced-apart margin-top">
+            <label for="email">
+                Email
+            </label>
+            <input type="email" name="email" id="email">
+        
+        </div>
+        <div class="flex-center-wrap">
+        <button type="submit" class="marginsAuto">Submit</button>
+        </div>
+    </form>
+    
+</fieldset>
 {% endblock %}

@@ -4,7 +4,8 @@
 <div class="centerText" style="margin-bottom: 40px;"><h2>Login to start Booking Appointments</h2></div>
 
     {% if message %}
-        <div>{{ message }}</div>
+        <div class="largeWarning">{{ message }}</div>
+        <br>
     {% endif %}
 
     <form action="{% url 'login' %}" method="post">

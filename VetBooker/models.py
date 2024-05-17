@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 class User(AbstractUser):
+    can_access = models.BooleanField(blank=False, default=False)
     pass
 
 class Vet(models.Model):

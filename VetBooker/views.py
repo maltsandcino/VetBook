@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from .models import User, Pet, Client, Booking, Vet, Skill
@@ -29,6 +30,7 @@ class tempBooking:
         def __str__(self):
             return f"Booking({self.title}, {self.vet})"
 
+@login_required
 def pet_appointments(request, pet_id):        
 
     pet = Pet.objects.get(id=pet_id)
@@ -76,6 +78,7 @@ def generate_appointments(request):
     return JsonResponse({"date": day, "vet": vet.name, "bookings": booking_list}, status=200)
 
 ###TODO: Work on listings
+@login_required
 def appointments(request):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -97,6 +100,7 @@ def appointments(request):
         
     return render(request, "VetBooker/search.html")
 
+@login_required
 def schedule(request):
     today = date.today()
     vets = Vet.objects.all()
@@ -282,7 +286,7 @@ def add_booking(request):
         return JsonResponse({"message":"More information is necessary for this path", "status": "200", "name": pet_name, "id": new_booking.id}, status=200) 
     return JsonResponse({"message":"More information is necessary for this path", "status": "400"}, status=400)
 
-
+@login_required
 def view_specific_booking(request, booking_id):
     ###Getting all relevant booking information
     booking_id = int(booking_id)
@@ -455,6 +459,10 @@ def login_view(request):
 
         # Check if authentication successful
         if user is not None:
+            if user.can_access == False:
+                return render(request, "VetBooker/login.html", {
+                "message": "Your account has not yet been activated. Please re-enter your details, or contact your systems administrator"
+                })
             login(request, user)
             return HttpResponseRedirect(reverse("index"))
         else:
@@ -463,7 +471,8 @@ def login_view(request):
             })
     else:
         return render(request, "VetBooker/login.html")
-
+    
+@login_required
 def logout_view(request):
 
     if request.user.is_authenticated:
@@ -471,38 +480,46 @@ def logout_view(request):
     return HttpResponseRedirect(reverse("index"))
 
 ###Only superusers may create other users in the system via the register page.
-def register(request):
-    if request.user.is_superuser:
-        if request.method == "POST":
-            username = request.POST["username"]
-            email = request.POST["email"]
+def register(request):    
+    if request.method == "POST":
+        print("posting")
+        username = request.POST["username"]
+        email = request.POST["email"]
+        first_name = request.POST["firstName"]
+        last_name = request.POST["lastName"]
 
-            # Ensure password matches confirmation
-            password = request.POST["password"]
-            confirmation = request.POST["confirmation"]
-            if password != confirmation:
-                return render(request, "VetBooker/register.html", {
-                    "message": "Passwords must match."
-                })
+        # Ensure password matches confirmation
+        password = request.POST["password"]
+        confirmation = request.POST["confirmation"]
+        if password != confirmation:
+            return render(request, "VetBooker/register.html", {
+                "message": "Passwords must match."
+            })
 
-            # New user is created, and handled if the username already exists
-            try:
-                user = User.objects.create_user(username, email, password)
-                user.save()
-            except IntegrityError:
-                return render(request, "VetBooker/register.html", {
-                    "message": "Username already taken."
-                })
-            return HttpResponseRedirect(reverse("index"))
-        else:
-            return render(request, "VetBooker/register.html")
-    else:
+        # New user is created, and handled if the username already exists
+        try:
+            user = User.objects.create_user(username=username, 
+                                            email=email,
+                                            first_name=first_name,
+                                            last_name=last_name,
+                                            password=password, 
+                                            can_access=False)
+        except IntegrityError:
+            return render(request, "VetBooker/register.html", {
+                "message": "Username already in use."
+            })
         return HttpResponseRedirect(reverse("index"))
+    else:
+        return render(request, "VetBooker/register.html")
+    # else:
+    #     return HttpResponseRedirect(reverse("index"))
 
+@login_required
 def index(request):
 
     return render(request, "VetBooker/index.html", {'message': f"Welcome, {request.user.username}"})
 
+@login_required
 def book(request):
 
     vet_list = []
@@ -671,7 +688,7 @@ def add_pet(request):
         
     pass
 
-
+@login_required
 def manage(request):
 
     if request.method == "POST":

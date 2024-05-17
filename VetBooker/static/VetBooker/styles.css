@@ -85,6 +85,23 @@ button:hover {
     justify-content: space-around;
 }
 
+.flex-wrap-column-register {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: 100%;
+    justify-content: space-between;
+}
+
+
+label {
+   margin-right: 5px;
+}
+
+.margin-top {
+    margin-top: 10px;
+}
+
 .fortyVW {
     width: 40vw;
 }
@@ -379,4 +396,14 @@ td:nth-child(even) {
    
     width: 30%;
     min-width: 100px;
+}
+
+.largeWarning {
+    text-align: center;
+    width: 100vw;
+    height: 50px;
+    font-size: 2rem;
+    font-weight: 500;
+    background-color:#853c3c
+    
 }

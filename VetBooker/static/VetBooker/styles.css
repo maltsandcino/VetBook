@@ -1,3 +1,37 @@
+@keyframes remove {
+    0% {
+        opacity: 1;
+        height: 100%;
+        line-height: 100%;
+        width: 100%;
+        min-height: 100px;
+        margin-bottom: 0px;
+       
+    }
+    
+    50% {
+
+        color:#191c1f;
+    }
+    75% {
+        opacity: 0;
+        height: 0px;
+        line-height: 0px;
+        margin-bottom: -80px;
+        display: none;
+    }
+    
+    100% {
+        opacity: 0;
+        height: 0px;
+        line-height: 0px;
+        margin-bottom: -200px;
+        display: none;
+    }
+}
+
+
+
 button {
     border-radius: 4px;
     border: none;
@@ -104,6 +138,10 @@ label {
 
 .fortyVW {
     width: 40vw;
+    background-color:#1f2327;
+    border-radius: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .flex-spaced {
@@ -139,6 +177,28 @@ label {
     text-align: left;
     background-color: #2b3035;
     border-radius: 5px;
+    animation-name: remove;
+    animation-duration: 1.5s;
+    animation-fill-mode: forwards;
+    animation-play-state: paused;
+}
+
+.approvalDiv {
+    padding-left: 5px;
+    padding-top: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+    min-height: 100px;
+    margin-bottom: 10px;
+    text-align: left;
+    background-color: #2b3035;
+    border-radius: 5px;
+    animation-name: remove;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+    animation-play-state: paused;
 }
 
 .appointmentDiv:hover {
@@ -406,4 +466,8 @@ td:nth-child(even) {
     font-weight: 500;
     background-color:#853c3c
     
+}
+
+.noBG {
+    background-color: transparent;
 }

@@ -14,6 +14,7 @@ urlpatterns = [
     path("schedule", views.schedule, name="schedule"),
     path("clientAppointments", views.appointments, name="appointments"),
     path("petAppointments/<str:pet_id>", views.pet_appointments, name="pet_appointments"),
+    path("approval", views.account_approval, name="account_approval"),
 
 
     # API ROUTING

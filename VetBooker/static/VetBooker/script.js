@@ -1,5 +1,9 @@
 
 document.addEventListener('DOMContentLoaded', () =>{
+
+    if (document.getElementById("approvalGallery")){
+        document.getElementById("approvalGallery").addEventListener('click', () => {approveAccount()})
+    }
     if (document.getElementById("dateSelect")){
         document.getElementById('dateSelect').valueAsDate = new Date();
     }
@@ -35,6 +39,76 @@ document.addEventListener('DOMContentLoaded', () =>{
         document.getElementById("generate").addEventListener('click', () => {generateBookings()})
     }
 })
+
+//Change the animation to the fifty div, and change the animation of the approvalDiv to make this more smooth.
+function approveAccount() {
+
+    console.log(event.target)
+    var element = event.target
+    var id = ""
+
+    if(element.className === 'approvalDiv'){
+    id = element.id
+    }
+    if(element.className === 'fifty'){
+        id = element.parentNode.id
+        element = element.parentNode
+    }
+    if(element.className === 'approvalP'){ 
+        id = element.parentNode.parentNode.id
+        element = element.parentNode.parentNode
+    }
+
+    let modal = document.getElementById("modal");
+    modal.classList.toggle("notVisible")
+
+    let yes = document.getElementById("yes");
+    let no = document.getElementById("no");
+
+    const removalHandler = (event) => {
+        createActiveUser(id, element)
+        yes.removeEventListener('click', removalHandler)
+    }
+
+    
+    yes.removeEventListener('click', removalHandler) 
+
+    yes.addEventListener('click', removalHandler);
+    yes.hasEventListener = true;
+
+    no.addEventListener('click', () => {
+        yes.removeEventListener('click', removalHandler)
+        if(!modal.classList.contains("notVisible")){
+            modal.classList.toggle("notVisible");}
+    } )
+    
+}
+
+async function createActiveUser(data, element){
+    console.log(data)
+
+    let response = await fetch('/approval', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': `${document.cookie.split('=').pop()}`
+        },
+        body: JSON.stringify({
+            user: data,
+        })
+    });
+    try {const result = await response.json()
+        console.log("Checking:")
+        console.log(result.user_id)      
+        }    
+
+    catch (error) {
+        console.log(error)
+    }
+
+    document.getElementById("modal").classList.toggle("notVisible")
+    element.style.animationPlayState = 'running';
+}
 
 async function findUserBookings() {
     let clientTel = document.getElementById("clientTel").value;

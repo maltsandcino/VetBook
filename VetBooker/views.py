@@ -39,7 +39,7 @@ def pet_appointments(request, pet_id):
     tel = client.telephone 
     client_name = client.name
 
-    bookings = Booking.objects.filter(Pet=pet)
+    bookings = Booking.objects.filter(Pet=pet).order_by("-day", "-start_time")
     booking_list = []
     
     for booking in bookings:
@@ -60,7 +60,7 @@ def generate_appointments(request):
         vet_id = data.get("vet")
         day = data.get("date")
         vet = Vet.objects.get(id=vet_id)
-        bookings = Booking.objects.filter(vet=vet).filter(day=day)
+        bookings = Booking.objects.filter(vet=vet).filter(day=day).order_by("-day", "start_time")
         date_format = "%a %m-%b-%y"
        
         if not vet or not bookings:
@@ -86,7 +86,7 @@ def appointments(request):
         client = Client.objects.get(telephone=tel)
         client_name = client.name
         
-        bookings = Booking.objects.filter(Client=client)
+        bookings = Booking.objects.filter(Client=client).order_by("-day", "start_time")
         booking_list = {}
         for i, booking in enumerate(bookings):
             day_string = str(booking.day)
@@ -449,6 +449,31 @@ def get_avails(request):
         return JsonResponse(updated_week_slots, status=200, safe=False)
     return JsonResponse({"message": "More information is necessary for this path"}, status=400)
 
+
+
+def account_approval(request):
+    if not request.user.is_superuser:
+        return HttpResponseRedirect(reverse("index"))
+    
+    if request.method == "POST":
+        data = json.loads(request.body)
+        user_id = data.get("user")
+        user = User.objects.get(id=user_id)
+        user.can_access = True
+        user.save()
+        return JsonResponse({"user_id": user_id}, status=200)
+
+    users_set = User.objects.filter(can_access=False).order_by("-date_joined")
+    users = list()
+
+    for user in users_set:
+        users.append(user)
+    
+    print(users)
+
+    return render(request, "VetBooker/approval.html", {'users': users})
+
+
 def login_view(request):
     if request.method == "POST":
 
@@ -459,9 +484,9 @@ def login_view(request):
 
         # Check if authentication successful
         if user is not None:
-            if user.can_access == False:
+            if user.can_access == False and user.is_superuser == False:
                 return render(request, "VetBooker/login.html", {
-                "message": "Your account has not yet been activated. Please re-enter your details, or contact your systems administrator"
+                "message": "Your account has not yet been activated. Please be patient while your systems administrator reviews your request."
                 })
             login(request, user)
             return HttpResponseRedirect(reverse("index"))

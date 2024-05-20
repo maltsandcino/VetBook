@@ -1424,8 +1424,27 @@ function start_cancel(){
     no.addEventListener('click', closeHandler)
 }
 
-function cancel(Booking_id){
-    console.log(`Booking Id: ${Booking_id}`);
+async function cancel(Booking_id){
+
+    let response = await fetch(`./${Booking_id}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': `${document.cookie.split('=').pop()}`
+        },
+        body: JSON.stringify({
+            booking_id: Booking_id,
+            delete: true
+        })
+    });
+    try {const result = await response.json()
+        window.location.reload(true)     
+        }    
+
+    catch (error) {
+        console.log(error)
+    }
+
     modal.classList.toggle("notVisible");
 }
 

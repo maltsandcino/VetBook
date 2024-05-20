@@ -2,8 +2,14 @@
 {% load static %}
 {% block body %}
 {% csrf_token %}
-<h3 class="pageTitle">Appointment for {{ pet_name }}</h3>
+{% if booking_name %}<h3 class="pageTitle">Appointment for {{ pet_name }}</h3>{% endif %}
+{% if notice %}<h3 class="pageTitle">Appointment</h3>{% endif %}
 
+{% if notice %}
+<div class="largeWarning">This appointment does not or no longer exists.</div>
+{% endif %}
+
+{% if booking_name %}
 <table class="centered bookingListing" >
     <thead> 
         
@@ -75,6 +81,7 @@
 <div class="flex-row-forty">
     <button onclick="start_cancel()">Cancel Booking</button>
 </div>
+{% endif %}
 
 <div class="modal notVisible flex-column fortyVW" id="modal">
     <div style="height: 75%;">

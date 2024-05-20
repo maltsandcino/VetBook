@@ -261,7 +261,7 @@ def add_booking(request):
         time_second = str(time[3:6])
        
         time_second = time_dict[time_second]
-        print(time_second)
+        
         time_string = time_first + time_second
       
         time_string = float(time_string)
@@ -269,6 +269,7 @@ def add_booking(request):
         note = data.get("note")
         duration = data.get("duration")
 
+        ###Making sure duration value matches database values
         if duration == 0:
             duration = 15
         elif duration == 1:
@@ -279,11 +280,11 @@ def add_booking(request):
             duration = 120
         title = data.get("title")
 
+        #ensuring no double booking occurs.
         bookings_check = Booking.objects.filter(vet=doctor).filter(day=date)
        
         for current_booking in bookings_check:
-            # start_time = datetime.strftime(current_booking.start_time, "%H:%M")
-            # start_time = strptime(start_time, "H:%M")
+            #Convert  existing booking time to float
             booking_time_first = str(current_booking.start_time)[0:2]
             booking_time_second = str(current_booking.start_time)[3:5]
      
@@ -304,24 +305,15 @@ def add_booking(request):
             ###Determine when the existing booking will end, if it ends at or after the appointment, then it won't fit.
 
             current_booking_end = booking_time_string + duration_dict[current_booking.duration]
-            print(current_booking)
-            print(current_booking.duration)
-            print(booking_time_string)
-            print(current_booking_end)
-            print(time_string)
-
+        
             if booking_difference < 0.0 and current_booking_end > time_string:
-                 
-                 print("existing booking too long")
-                
+                  
                  return JsonResponse({"message":"This booking does not fit into this timeslot. Please refresh and try again.", "status": "400"}, status=400)
             
             ###If the new booking runs into the existing booking, this also won't work.
             new_booking_end = time_string + duration_dict[duration]
 
             if booking_difference > 0.0 and new_booking_end > booking_time_string:
-
-                print("new booking too long")
         
                 return JsonResponse({"message":"This booking does not fit into this timeslot. Please refresh and try again.", "status": "400"}, status=400)
             
@@ -353,8 +345,27 @@ def add_booking(request):
 @login_required
 def view_specific_booking(request, booking_id):
     ###Getting all relevant booking information
+    if request.method == "POST":
+        
+        data = json.loads(request.body)
+        booking_id = data.get("booking_id")
+        delete = data.get("delete")
+        booking = Booking.objects.get(id=booking_id)
+        pet = str(booking.Pet.all()[0])
+        if delete == True:
+            booking.delete()
+        notice = True
+
+        return JsonResponse({"message":"Booking deleted", "pet_name": pet, "notice": notice}, status=200)
+    
+
     booking_id = int(booking_id)
-    booking = Booking.objects.get(id=booking_id)
+    print(booking_id)
+    try:
+        booking = Booking.objects.get(id=booking_id)
+    except:
+        notice = True
+        return render(request, "VetBooker/view_specific_booking.html", {'notice': notice} )
     client = booking.Client.all()[0]
     pet = booking.Pet.all()[0]
     note = booking.comments

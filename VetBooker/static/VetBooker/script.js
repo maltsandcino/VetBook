@@ -249,7 +249,9 @@ async function submitBooking(telephone, pet, date, time, doctor, length, note, s
     console.log(result.status)
     if (result.status === "400"){
         alert("Please verify your data and try to submit again.");
-        modalDiv.classList.toggle("notVisible");
+        document.getElementById("confirmationModal").classList.toggle("notVisible");
+        document.getElementById("bg").classList.toggle("notVisible");
+        return { then: function() {} }
     }
         document.getElementById("confirmationModal").innerHTML = `<div style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;"><h4 style="margin: auto;">Booking for <i>${result.name}</i> has been successfully submited.</h4><h5>Forwarding to appointment.</h5></div>`
         document.getElementById("confirmationModal").classList.toggle("successful")
@@ -436,6 +438,9 @@ function paginate(direction){
         end = document.getElementById("date_6")
         doctor = end.dataset.value
         day = end.dataset.paginator
+        console.log("Doctor and Day")
+        console.log(doctor)
+        console.log(day)
         
         appointmentSearch(doctor, day)
     }
@@ -443,6 +448,10 @@ function paginate(direction){
         end = document.getElementById("date_0")
         doctor = end.dataset.value
         day = end.dataset.paginator
+        console.log("Doctor and Day")
+        console.log(doctor)
+        console.log(day)
+
         
         appointmentSearch(doctor, day, "left")
     }
@@ -688,6 +697,7 @@ function submissionHandler(event){
         }
 
 function appointmentSearch(e, customDay, direction){
+
 
     if (document.getElementById("appointmentList").classList.contains("notVisible")){
         document.getElementById("appointmentList").classList.toggle("notVisible")}

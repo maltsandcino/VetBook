@@ -12,7 +12,7 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from datetime import date, timedelta, datetime
 import re
-
+from time import strptime, mktime
 
 # Create your views here.
 class tempBooking:
@@ -236,7 +236,7 @@ def custom_times(request):
 
 ##TO DO
 def add_booking(request):
-    ###Needs server side validation big time
+    ### checking if new booking exists in the system, then if it does fit, saves it.
     if request.method == "POST":
         date_format = "%Y-%m-%d"
         data = json.loads(request.body)
@@ -251,8 +251,23 @@ def add_booking(request):
         date = datetime.strptime(date, date_format)
 
         time = data.get("time")
+
+        ##Below, converting time to a float for mathematical purposes in validation.
+        time_dict = {"00": ".00", "15": ".25", "30": ".5", "45": ".45"}
+        duration_dict = {15: .25, 30: .5, 60: 1, 120: 2}
+        time_first = str(time[0:2])
+        
+        
+        time_second = str(time[3:6])
+       
+        time_second = time_dict[time_second]
+        time_string = time_first + time_second
+      
+        time_string = float(time_string)
+      
         note = data.get("note")
         duration = data.get("duration")
+
         if duration == 0:
             duration = 15
         elif duration == 1:
@@ -264,22 +279,60 @@ def add_booking(request):
         title = data.get("title")
 
         bookings_check = Booking.objects.filter(vet=doctor).filter(day=date)
-        # for current_booking in bookings_check:
-            # print(current_booking.duration)
-            # print(current_booking.start_time)
+       
+        for current_booking in bookings_check:
+            # start_time = datetime.strftime(current_booking.start_time, "%H:%M")
+            # start_time = strptime(start_time, "H:%M")
+            booking_time_first = str(current_booking.start_time)[0:2]
+            booking_time_second = str(current_booking.start_time)[3:5]
+     
+            booking_time_second = time_dict[booking_time_second]
+            
+            booking_time_string = booking_time_first + booking_time_second
+            booking_time_string = float(booking_time_string)
+
+            ### If the difference is 0, then there is already a booking at that time. If the difference is negative, then the new booking is later. 
+            ##If the difference is positive, then the new booking is earlier.
+
+            booking_difference = booking_time_string - time_string
+
+            if booking_difference == 0.0:
+                return JsonResponse({"message":"This booking does not fit into this timeslot. Please refresh and try again.", "status": "400"}, status=400)
+            
+            ###Determine when the existing booking will end, if it ends at or after the appointment, then it won't fit.
+
+            current_booking_end = booking_time_string + duration_dict[current_booking.duration]
+
+            if booking_difference < 0.0 and current_booking_end > time_string:
+                
+                 return JsonResponse({"message":"This booking does not fit into this timeslot. Please refresh and try again.", "status": "400"}, status=400)
+            
+            ###If the new booking runs into the existing booking, this also won't work.
+            new_booking_end = time_string + duration_dict[duration]
+
+            if booking_difference > 0.0 and new_booking_end > booking_time_string:
+        
+                return JsonResponse({"message":"This booking does not fit into this timeslot. Please refresh and try again.", "status": "400"}, status=400)
+            
 
         new_booking = Booking(title=title, day=date, start_time=time, duration=duration, comments=note, vet=doctor)      
         new_booking.save()
+
         doctor.bookings.add(new_booking)
         doctor.save()
+
         owner.bookings.add(new_booking)
         owner.save()
+
         pet.bookings.add(new_booking)
         pet.save()
+
         new_booking.Pet.add(pet)
         new_booking.save()
+
         new_booking.Client.add(owner)
         new_booking.save()
+
         print(new_booking.id)
 
         ##Make sure to change status and messages below:
@@ -324,20 +377,23 @@ def get_avails(request):
         
         ##Determining what period we are looking into. Default starts with today.
         today = date.today()
+        print(type(today))
         
         custom_date = data.get("date")
         direction = data.get("direction")
         
         if custom_date:
-            print(today)
             date_format = "%Y-%m-%d"
             custom_date = custom_date[11:] + "-" + custom_date[8:10] + "-" + custom_date[5:7]
             today = datetime.strptime(custom_date, date_format)
+            ###Convert time to datetime.date object, and remove the time component
+            today = today.date()
+            
         
 
         if date.weekday(today) == 6:
             week_in_future = today + timedelta(days=10)
-            print(week_in_future)
+       
             DAY_CONSTANT = 9
         else:
             week_in_future = today + timedelta(days=9)

@@ -989,6 +989,12 @@ function addToOwner(user, pet){
 }
 
 function addNewPet(data){
+    if(!document.getElementById("managePets").classList.contains("notVisible")){
+        document.getElementById("managePets").classList.toggle("notVisible");
+    }
+    if(!document.getElementById("managementDiv").classList.contains("notVisible")){
+        document.getElementById("managementDiv").classList.toggle("notVisible");
+    }
     console.log("addNewPet")
     if(data === undefined){
         console.log("data undefined")
@@ -1121,6 +1127,13 @@ async function submitClient(){
 }
 
 function addClient(){
+
+    if(!document.getElementById("managePets").classList.contains("notVisible")){
+        document.getElementById("managePets").classList.toggle("notVisible");
+    }
+    if(!document.getElementById("managementDiv").classList.contains("notVisible")){
+        document.getElementById("managementDiv").classList.toggle("notVisible");
+    }
 
     document.getElementById("clientName").value = ""
     document.getElementById("clientTelephone").value = ""

@@ -471,3 +471,24 @@ td:nth-child(even) {
 .noBG {
     background-color: transparent;
 }
+
+.width-thirty {
+    width: 30vw;
+    min-width: 350px;
+    left: 34vw;
+    margin: auto;
+}
+
+.flex-row-forty {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    width: 40vw;
+    min-width: 300px;
+    margin: auto;
+}
+
+.red {
+    color: red;
+}
+

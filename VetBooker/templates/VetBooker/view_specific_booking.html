@@ -71,5 +71,20 @@
     </tr>
     </tbody>
 </table>
+<br>
+<div class="flex-row-forty">
+    <button onclick="start_cancel()">Cancel Booking</button>
+</div>
+
+<div class="modal notVisible flex-column fortyVW" id="modal">
+    <div style="height: 75%;">
+    <h5 style="margin-top: 20%; text-align: center; line-height: 1.5;">Are you sure you want to cancel <span class="red">{{ pet_name }}'s</span> appointment on <span class="red">{{ date }}</span> at <span class="red">{{ time }}</span>?</h5>
+    </div>
+    <div class="flex-spaced">
+        <button style="width: 25%; margin-bottom: 10px;" value="{{ booking_id }}" id="yes">Yes</button> <button style="width: 25%; margin-bottom: 10px;" value="no" id="no">No</button>
+    </div>
+
+</div>
+
 
 {% endblock %}

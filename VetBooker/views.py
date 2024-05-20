@@ -253,7 +253,7 @@ def add_booking(request):
         time = data.get("time")
 
         ##Below, converting time to a float for mathematical purposes in validation.
-        time_dict = {"00": ".00", "15": ".25", "30": ".5", "45": ".45"}
+        time_dict = {"00": ".00", "15": ".25", "30": ".5", "45": ".75"}
         duration_dict = {15: .25, 30: .5, 60: 1, 120: 2}
         time_first = str(time[0:2])
         
@@ -261,6 +261,7 @@ def add_booking(request):
         time_second = str(time[3:6])
        
         time_second = time_dict[time_second]
+        print(time_second)
         time_string = time_first + time_second
       
         time_string = float(time_string)
@@ -297,13 +298,21 @@ def add_booking(request):
             booking_difference = booking_time_string - time_string
 
             if booking_difference == 0.0:
+                print("Bookings at the same time")
                 return JsonResponse({"message":"This booking does not fit into this timeslot. Please refresh and try again.", "status": "400"}, status=400)
             
             ###Determine when the existing booking will end, if it ends at or after the appointment, then it won't fit.
 
             current_booking_end = booking_time_string + duration_dict[current_booking.duration]
+            print(current_booking)
+            print(current_booking.duration)
+            print(booking_time_string)
+            print(current_booking_end)
+            print(time_string)
 
             if booking_difference < 0.0 and current_booking_end > time_string:
+                 
+                 print("existing booking too long")
                 
                  return JsonResponse({"message":"This booking does not fit into this timeslot. Please refresh and try again.", "status": "400"}, status=400)
             
@@ -311,6 +320,8 @@ def add_booking(request):
             new_booking_end = time_string + duration_dict[duration]
 
             if booking_difference > 0.0 and new_booking_end > booking_time_string:
+
+                print("new booking too long")
         
                 return JsonResponse({"message":"This booking does not fit into this timeslot. Please refresh and try again.", "status": "400"}, status=400)
             
@@ -362,7 +373,7 @@ def view_specific_booking(request, booking_id):
 
     
     ##Pass information to template
-    return render(request, "VetBooker/view_specific_booking.html", {'pet_name': pet.name, 'client_name': client.name, 'vet_name': vet, 'note': note, 'time': time, 'duration': duration, 'pet_id': pet.id, 'booking_name': booking_name, 'date': day})
+    return render(request, "VetBooker/view_specific_booking.html", {'pet_name': pet.name, 'client_name': client.name, 'vet_name': vet, 'note': note, 'time': time, 'duration': duration, 'pet_id': pet.id, 'booking_name': booking_name, 'date': day, 'booking_id': booking_id})
     
 
 def get_avails(request):

@@ -249,6 +249,7 @@ async function submitBooking(telephone, pet, date, time, doctor, length, note, s
     console.log(result.status)
     if (result.status === "400"){
         alert("Please verify your data and try to submit again.");
+        doctorSelect();
         document.getElementById("confirmationModal").classList.toggle("notVisible");
         document.getElementById("bg").classList.toggle("notVisible");
         return { then: function() {} }
@@ -599,7 +600,10 @@ function customConfirmationDiv(){
 
 
 function doctorSelect() {
-    if (document.getElementById("doctorList").classList.contains("notVisible")){
+    if (!document.getElementById("doctorList").classList.contains("notVisible")){
+        document.getElementById("appointmentList").innerHTML = ""
+        document.getElementById("appointmentList").classList.toggle("notVisible")
+        document.getElementById("pDiv").classList.toggle("notVisible")
         // document.getElementById("doctorList").classList.toggle("notVisible")}
     }
 
@@ -1380,5 +1384,35 @@ function editUser(data, field) {
                     })
                 }
     
+}
+
+function start_cancel(){
+    modal = document.getElementById("modal")
+    modal.classList.toggle("notVisible")
+    yes = document.getElementById("yes")
+    no = document.getElementById("no")
+
+    Booking_id = yes.value
+
+    const cancelHandler = (event) => {
+        cancel(Booking_id);
+        yes.removeEventListener('click', cancelHandler)
+        no.removeEventListener('click', closeHandler)
+    }
+
+    const closeHandler = (event) => {
+        modal.classList.toggle("notVisible");
+        no.removeEventListener('click', closeHandler)
+        yes.removeEventListener('click', cancelHandler);
+
+    }
+
+    yes.addEventListener('click', cancelHandler)
+    no.addEventListener('click', closeHandler)
+}
+
+function cancel(Booking_id){
+    console.log(`Booking Id: ${Booking_id}`);
+    modal.classList.toggle("notVisible");
 }
 

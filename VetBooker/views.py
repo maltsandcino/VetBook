@@ -35,7 +35,7 @@ def pet_appointments(request, pet_id):
 
     pet = Pet.objects.get(id=pet_id)
     client = pet.owner
-    print(client)
+    
     tel = client.telephone 
     client_name = client.name
 
@@ -66,7 +66,7 @@ def generate_appointments(request):
         if not vet or not bookings:
             return JsonResponse({"message": "No bookings found on this date"})
         booking_list = {}
-        print(bookings)
+      
         for i, booking in enumerate(bookings):
             day_string = str(booking.day)
             day_string = day_string[5:7] + day_string[4] + day_string[8:] + day_string[4] + day_string[0:4]
@@ -108,7 +108,7 @@ def schedule(request):
     for vet in vets:
         vet_list.append(vet)
     
-    print(vet_list)
+    
     return render(request, "VetBooker/schedule.html", {'date': today, 'vet_list': vet_list})
 
 
@@ -178,7 +178,7 @@ def custom_times(request):
         if date.weekday(custom_day) != 6:
             other_custom_day = str(custom_day)
             other_custom_day = other_custom_day[:10]
-            print(other_custom_day)
+            
             week_slots[other_custom_day] = all_time_slots[:]
             new_keys.append(f"{day_names[date.weekday(custom_day)]}, {str(custom_day)[8:10]}-{str(custom_day)[5:7]}-{str(custom_day)[0:4]}")
         else:
@@ -299,7 +299,7 @@ def add_booking(request):
             booking_difference = booking_time_string - time_string
 
             if booking_difference == 0.0:
-                print("Bookings at the same time")
+                
                 return JsonResponse({"message":"This booking does not fit into this timeslot. Please refresh and try again.", "status": "400"}, status=400)
             
             ###Determine when the existing booking will end, if it ends at or after the appointment, then it won't fit.
@@ -336,7 +336,7 @@ def add_booking(request):
         new_booking.Client.add(owner)
         new_booking.save()
 
-        print(new_booking.id)
+        
 
         ##Make sure to change status and messages below:
         return JsonResponse({"message":"More information is necessary for this path", "status": "200", "name": pet_name, "id": new_booking.id}, status=200) 
@@ -360,7 +360,7 @@ def view_specific_booking(request, booking_id):
     
 
     booking_id = int(booking_id)
-    print(booking_id)
+    
     try:
         booking = Booking.objects.get(id=booking_id)
     except:
@@ -399,7 +399,7 @@ def get_avails(request):
         
         ##Determining what period we are looking into. Default starts with today.
         today = date.today()
-        print(type(today))
+       
         
         custom_date = data.get("date")
         direction = data.get("direction")
@@ -424,7 +424,7 @@ def get_avails(request):
         
 
         if direction == "left":
-            print(direction)
+            
             week_in_future = today + timedelta(days=1)
             today = week_in_future - timedelta(days=8)
         
@@ -547,7 +547,7 @@ def account_approval(request):
     for user in users_set:
         users.append(user)
     
-    print(users)
+    
 
     return render(request, "VetBooker/approval.html", {'users': users})
 
@@ -585,7 +585,7 @@ def logout_view(request):
 ###Only superusers may create other users in the system via the register page.
 def register(request):    
     if request.method == "POST":
-        print("posting")
+        
         username = request.POST["username"]
         email = request.POST["email"]
         first_name = request.POST["firstName"]
@@ -711,7 +711,7 @@ def add_customer(request):
         except:
             pass
         new_customer = Client(name=name, telephone=tel, email=email, address=address)
-        print(new_customer)
+        
         new_customer.save()
         return JsonResponse({"message": "New Client successfully created", "tel": tel}, status=200)
 
@@ -739,7 +739,7 @@ def pet_search(request):
         pet_options = []
         for pet in unowned:
             pet_options.append({"name": pet.name, "species": pet.species, "id": pet.id})
-        print(pet_options)
+        
         if not unowned:
             return JsonResponse({"message":"No pets found"}, status=400)
         else:
@@ -769,7 +769,7 @@ def add_pet(request):
         data = json.loads(request.body)
         name = data.get("name")
         owner = data.get("owner")
-        print(owner)
+        
         species = data.get("species")
         breed = data.get("breed")
         
@@ -781,15 +781,13 @@ def add_pet(request):
         else:
 
             owner = Client.objects.get(id=owner)
-            print(owner)
+           
             new_pet = Pet(name=name, species=species, breed=breed, owner=owner)
             new_pet.save()
             
             return JsonResponse({"message": "this seems to work", "name": name}, status=200)
 
     return JsonResponse({"message": "this seems to work"}, status=200)
-        
-    pass
 
 @login_required
 def manage(request):

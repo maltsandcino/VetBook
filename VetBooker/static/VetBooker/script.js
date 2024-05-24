@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () =>{
 //Change the animation to the fifty div, and change the animation of the approvalDiv to make this more smooth.
 function approveAccount() {
 
-    console.log(event.target)
+    
     var element = event.target
     var id = ""
 
@@ -85,7 +85,7 @@ function approveAccount() {
 }
 
 async function createActiveUser(data, element){
-    console.log(data)
+    
 
     let response = await fetch('/approval', {
         method: 'POST',
@@ -98,8 +98,7 @@ async function createActiveUser(data, element){
         })
     });
     try {const result = await response.json()
-        console.log("Checking:")
-        console.log(result.user_id)      
+          
         }    
 
     catch (error) {
@@ -112,7 +111,7 @@ async function createActiveUser(data, element){
 
 async function findUserBookings() {
     let clientTel = document.getElementById("clientTel").value;
-    console.log(clientTel)
+   
     
     let mainDiv = document.getElementById("appointmentContainer");
     mainDiv.innerHTML = '<div id="appointmentGallery"></div>'
@@ -130,7 +129,7 @@ async function findUserBookings() {
     try {const result = await response.json()
      
         let bookings = result.bookings
-        console.log(result.bookings)
+        
         document.getElementById("nameContainer").classList.toggle("notVisible")
         document.getElementById("name").innerHTML = `${result.name}`;
        
@@ -154,9 +153,7 @@ async function findUserBookings() {
             sibDiv.parentNode.insertBefore(aDiv, sibDiv);
         }}      
         
-        // bookings.forEach(function (booking) {
-        //     console.log(booking);
-        // });
+        
     
     }
     catch (error) {
@@ -184,7 +181,7 @@ async function generateBookings(){
         })
     });
     try {const result = await response.json()
-        // console.log(result.bookings)
+        
 
         let bookings = result.bookings
         if(result.bookings){
@@ -213,9 +210,7 @@ async function generateBookings(){
 
        
         
-        // bookings.forEach(function (booking) {
-        //     console.log(booking);
-        // });
+        
     
     }
     catch (error) {
@@ -246,7 +241,7 @@ async function submitBooking(telephone, pet, date, time, doctor, length, note, s
         })
     });
     try {const result = await response.json();
-    console.log(result.status)
+    
     if (result.status === "400"){
         alert("Please verify your data and try to submit again.");
         doctorSelect();
@@ -333,7 +328,7 @@ function confirmationDiv(clicked){
     modalDiv.classList.toggle("notVisible")
     date = date.split(",").pop()
     date = date[7] + date[8] + date[9] + date[10] + date[3] + date[4] + date[5] + date[3] + date[1] + date[2]
-    console.log(date)
+    
     // telephone, pet, date, time, doctor, length, note
     
    const handleConfirmClick = (event) => { 
@@ -439,9 +434,7 @@ function paginate(direction){
         end = document.getElementById("date_6")
         doctor = end.dataset.value
         day = end.dataset.paginator
-        console.log("Doctor and Day")
-        console.log(doctor)
-        console.log(day)
+        
         
         appointmentSearch(doctor, day)
     }
@@ -449,9 +442,7 @@ function paginate(direction){
         end = document.getElementById("date_0")
         doctor = end.dataset.value
         day = end.dataset.paginator
-        console.log("Doctor and Day")
-        console.log(doctor)
-        console.log(day)
+       
 
         
         appointmentSearch(doctor, day, "left")
@@ -512,7 +503,7 @@ function customDoctorSelect() {
                 
                 customDiv.innerHTML = customDiv.innerHTML + `<div class='flex-column'><select data-value="${vet}" data-paginator="${dateValue}" id="customSelect">${selector.innerHTML}</select><button id="customSubmit">Submit</button></div>`
                 document.getElementById("customSubmit").addEventListener('click', () => {customConfirmationDiv()})
-            // console.log(data)
+            
             }
         }
         else {
@@ -584,7 +575,7 @@ function customConfirmationDiv(){
     modalDiv.classList.toggle("notVisible")
     date = date.split(",").pop()
     date = date[7] + date[8] + date[9] + date[10] + date[3] + date[4] + date[5] + date[3] + date[1] + date[2]
-    console.log(date)
+    
     // telephone, pet, date, time, doctor, length, note
     
    const handleConfirmClick = (event) => { 
@@ -627,7 +618,7 @@ function doctorSelect() {
             return response.json();
         }
         else {
-            console.log("We do not have a doctor practising with that speciality");
+            
             let vetDiv = document.getElementById("doctorList");
             vetDiv.innerHTML = "";
         }
@@ -664,7 +655,7 @@ function doctorSelect() {
                         }
                     }
                     event.target.classList.toggle("selected")
-                    console.log(event.target.dataset.value)
+                    
                     
                     //Make sure the custom doctor select automatically gets changed to the selected doctor above, to avoid issues.
                     let customSelect = document.getElementById("customMedicalDomainSelector")
@@ -871,7 +862,7 @@ function manageCustomerSearch(args) {
      })
 }
 function showPetsModal(data) {
-    console.log("showPetsModal")
+    
     if(document.getElementById("selectContainer")){document.getElementById("selectContainer").classList.toggle("notVisible");
 
     }
@@ -982,7 +973,7 @@ function addToOwner(user, pet){
     })
     //Create dropdown menu with exant pets
     .then(data => {
-        console.log(data)
+        
 
             manageCustomerSearch()
         })
@@ -995,9 +986,9 @@ function addNewPet(data){
     if(!document.getElementById("managementDiv").classList.contains("notVisible")){
         document.getElementById("managementDiv").classList.toggle("notVisible");
     }
-    console.log("addNewPet")
+    
     if(data === undefined){
-        console.log("data undefined")
+        
         var closeData = data
     }
     let bg = document.getElementById("bg")
@@ -1104,11 +1095,11 @@ async function submitClient(){
     if(response.ok){
     try {const result = await response.json()
 
-        console.log(result.message)
+        
         let bg = document.getElementById("bg");
         bg.classList.toggle("bg");
         document.getElementById("addClient").classList.toggle("notVisible");
-        console.log(result.tel);
+        
         newTel = parseInt(result.tel);
         manageCustomer(newTel)
     }
@@ -1117,12 +1108,12 @@ async function submitClient(){
     }}
     else{
         if(response.status === 501){
-            console.log("status 501")
+            
             alert("A client with this telephone number already exists.")
             document.getElementById("clientTelephone").focus()
         }
         
-        console.log("Please verify the information provided.")
+        
     }
 }
 
@@ -1205,7 +1196,7 @@ async function submitPet(){
 
     try {const result = await response.json()
 
-        console.log(result.name)
+        
     if (document.getElementById("ownerP")){
         manageCustomerSearch()
     }
@@ -1254,7 +1245,7 @@ function remove(petid) {
 async function viewBookings(petid){
     let clientTel = document.getElementById("editTelephone").innerHTML;
     clientTel = parseInt(clientTel)
-    console.log(clientTel)
+    
     
     let mainDiv = document.getElementById("appointmentContainer");
     mainDiv.innerHTML = '<div id="appointmentGallery"></div>'
@@ -1273,7 +1264,7 @@ async function viewBookings(petid){
     try {const result = await response.json()
      
         let bookings = result.bookings
-        console.log(result.bookings)
+        
         document.getElementById("nameContainer").classList.toggle("notVisible")
         document.getElementById("name").innerHTML = `${result.petName}`;
        

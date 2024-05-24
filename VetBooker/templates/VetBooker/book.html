@@ -61,25 +61,40 @@
 </div>
 <div id="doctorList" class="flexGallery"></div>
 <div class="appointmentList flexGallery" id="appointmentList"></div>
-<div id="paginationDiv" class="flex-column flexGallery notVisible"><div class="Top" id="pDiv" style="text-align: right; margin-right: 10px;"><a id="previous" onclick="paginate('left')">Previous</a> | <a id="next" onclick="paginate('right')">Next</a></div><div class="Bottom flex-row"><label style="display: inline; margin-right: 10px;" for="customInput">Custom Date</label><input style="display: inline; margin-right: 10px;" type="date" name="customInput" id="customInput">
-    <div class="flex-row">
-    <label style="display: inline; margin-right: 10px;" for="customMedicalDomainSelector">Doctor:</label>
-        <select name="customMedicalDomainSelector" id="customMedicalDomainSelector" style="display: inline; margin-right: 10px;">
-            {% for vet in vetlist %}
-            <option value="{{ vet.id }}">{{ vet.vet }}</option>
-            {% endfor %}                
-        </select>
-        <label style="display: inline; margin-right: 10px;" for="customDurationSelector">Duration:</label>
+
+<div id="paginationDiv" class="flex-column flexGallery notVisible">
+    <div class="Top" id="pDiv" style="text-align: right; margin-right: 10px;"><a id="previous" onclick="paginate('left')">Previous</a> | <a id="next" onclick="paginate('right')">Next</a></div>
+    <div class="Bottom"><h6>Looking for a custom date?</h6></div>
+    <div class="Bottom flex-column">
+        <div class="item">
+            <label style="display: inline; margin-right: 10px;" for="customInput">Custom Date</label>
+            <input style="display: inline; margin-right: 10px;" type="date" name="customInput" id="customInput">
+        </div>
+        <div class="item">
+            <label style="display: inline; margin-right: 10px;" for="customMedicalDomainSelector">Doctor:</label>
+            <select name="customMedicalDomainSelector" id="customMedicalDomainSelector" style="display: inline; margin-right: 10px;">
+                {% for vet in vetlist %}
+                <option value="{{ vet.id }}">{{ vet.vet }}</option>
+                {% endfor %}                
+            </select>
+        </div>
+        <div class="item">
+            <label style="display: inline; margin-right: 10px;" for="customDurationSelector">Duration:</label>
             <select style="display: inline; margin-right: 10px;" name="customDurationSelector" id="customDurationSelector">
                 <option value="0">Consult: 15 Min.</option>
                 <option value="1">Exam: 30 Min.</option>
                 <option value="2">Small Op: 60 Min.</option>
                 <option value="3">Complex: 120 Min.</option>               
             </select>
-        <button style="display: inline; margin-right: 10px;" id="customDay">Check Availability</button></div>
+        </div>
+        <div class="item">
+        <button style="display: inline; margin-right: 10px;" id="customDay">Check Availability</button>
+        </div>
     <div class="Bottom flex-row" id="customAppointment"></div>
     </div>
     </div>
+    
+    
     <!--The below needs to be formated to not look really bad. Also setting class for now to not visible so I Don't forget.-->
     <div id="bg"></div>
     <div class="modal notVisible flex-column" id="confirmationModal">

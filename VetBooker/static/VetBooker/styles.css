@@ -142,6 +142,13 @@ label {
     border-radius: 5px;
     padding-left: 5px;
     padding-right: 5px;
+    min-width: 280px;
+}
+
+.item { 
+    display: flex;
+    justify-content: space-between;
+    min-width: 280px;
 }
 
 .flex-spaced {
@@ -169,6 +176,12 @@ label {
     gap: 20px;
 }
 
+#categories {
+    min-width: 102px;
+}
+.petList button {
+    min-width: 152px;
+}
 
 .appointmentDiv {
     width: 100%;
@@ -181,6 +194,9 @@ label {
     animation-duration: 1.5s;
     animation-fill-mode: forwards;
     animation-play-state: paused;
+    padding: 5px;
+    min-width: 280px;
+
 }
 
 .approvalDiv {
@@ -263,6 +279,9 @@ label {
 
 #results {
     width: 30vw;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
 }
 
 .customerResults {
@@ -272,6 +291,7 @@ label {
 .flex-column {
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
 }
 
 .flex-row {
@@ -284,6 +304,14 @@ label {
     height: 150px;
     margin-bottom: 15px;
     
+}
+
+.Bottom {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-width: 40vw;
+    min-width: 280px;
 }
 
 .notVisible {
@@ -301,7 +329,13 @@ label {
 }
 
 .petList {
-    border-bottom: 1px solid grey;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: space-around;
+    border-bottom: 1px dashed darkgray
+   
 }
 
 .twenty {
@@ -340,7 +374,7 @@ label {
 }
 
 #paginationDiv {
-    displaY: flex;
+    display: flex;
     flex-wrap: wrap;
     flex: auto;
     /* border: 1px solid red; */

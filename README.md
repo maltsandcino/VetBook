@@ -96,3 +96,13 @@ This page allows staff to look for appointments for any particular client, based
 ### view_specific_booking
 
 This page allows users to see the details of any specific appointment. This is linked to on any of the previous three pages. An appointment can be cancelled from this page.
+
+## How to Run
+
+As with the other assignments in this course, in order to run the project once simply needs to use the command **python manage.py runserver** in the relevant folder. Any new implementation of this program will likely want to clear out the database, and have customaized information about the specific clinic added in in the admin section. I would also recommended creating a new superuser account. This can be done with the command **python manage.py createsuperuser**. 
+
+If deleting all information from the database, one should be careful with editing the entries in for the **shift** model. views.py creates times based on what shift the doctor has. If the doctor has the morning shift, then the times are created from 8:00 to 16:00. If the vet has the afternoon shift, times are created from 12:00 - 20:00. This can be customized by whoever is administrating this software.
+
+## Other requirements
+
+Beyond Django, no other packages need to be installed, thus there is only one requirement in requirements.TXT file. 

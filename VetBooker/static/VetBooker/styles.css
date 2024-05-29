@@ -167,10 +167,24 @@ label {
     max-width: 510px;
 }
 
+.min331 {
+    min-width: 331px;
+    max-width: 100%
+}
+
 .flexGallery {
     margin-top: 20px;
     display: flex;
     flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.flexGalleryColumn {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
     justify-content: space-around;
     flex-wrap: wrap;
     gap: 20px;
@@ -293,6 +307,11 @@ label {
     flex-direction: column;
     flex-wrap: wrap;
 }
+.flex-column-nowrap {
+    display: flex;
+    flex-direction: column;
+   
+}
 
 .flex-row {
     display: flex;
@@ -381,7 +400,6 @@ label {
 }
 
 .modal {
-    
     position: absolute;
     display: flex;
     width: 50vw;
@@ -393,6 +411,47 @@ label {
     border: 1px solid grey;
     background-color: #191c1f;
 }
+
+@media screen and (max-width: 768px) {
+    
+    .modal {
+        position: absolute;
+        display: flex;
+        width: 100vw;
+        height: 40vh;
+        z-index: 9999;
+        left: 0;
+        top: 25vh;
+        border-radius: 10px;
+        border: 1px solid grey;
+        background-color: #191c1f;
+    }
+
+    .fortyVW {
+        width: 100vw;
+        background-color:#1f2327;
+        border-radius: 5px;
+        padding-left: 5px;
+        padding-right: 5px;
+        min-width: 280px;
+    }
+
+    .largeWarning {
+        display: inline-block;
+        text-align: center;
+        width: 100vw;
+        
+        font-size: 2rem;
+        font-weight: 500;
+        background-color:#853c3c;
+        margin-bottom: 20px;
+        
+    }
+
+    .space-above {
+        margin-top: 10px;
+    }}
+
 
 .container {
     width: 100%;
@@ -495,7 +554,7 @@ td:nth-child(even) {
 .largeWarning {
     text-align: center;
     width: 100vw;
-    height: 50px;
+    
     font-size: 2rem;
     font-weight: 500;
     background-color:#853c3c

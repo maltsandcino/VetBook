@@ -64,8 +64,9 @@
 
 <div id="paginationDiv" class="flex-column flexGallery notVisible">
     <div class="Top" id="pDiv" style="text-align: right; margin-right: 10px;"><a id="previous" onclick="paginate('left')">Previous</a> | <a id="next" onclick="paginate('right')">Next</a></div>
-    <div class="Bottom"><h6>Looking for a custom date?</h6></div>
-    <div class="Bottom flex-column">
+    
+    <div class="Bottom flex-column fortyVW marginsAuto">
+        <div class="Bottom"><h6 class="centerText">Looking for a custom date?</h6></div>
         <div class="item">
             <label style="display: inline; margin-right: 10px;" for="customInput">Custom Date</label>
             <input style="display: inline; margin-right: 10px;" type="date" name="customInput" id="customInput">
@@ -90,14 +91,14 @@
         <div class="item">
         <button style="display: inline; margin-right: 10px;" id="customDay">Check Availability</button>
         </div>
-    <div class="Bottom flex-row" id="customAppointment"></div>
+    <div class="Bottom flex-end" id="customAppointment"></div>
     </div>
     </div>
     
     
     <!--The below needs to be formated to not look really bad. Also setting class for now to not visible so I Don't forget.-->
     <div id="bg"></div>
-    <div class="modal notVisible flex-column" id="confirmationModal">
+    <div class="modal notVisible flex-column-nowrap" id="confirmationModal">
         <div><h2 class="modal-title" id="modalTitle"></h2></div>
         <div class="container">
             

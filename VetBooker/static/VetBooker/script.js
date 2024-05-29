@@ -501,7 +501,7 @@ function customDoctorSelect() {
                     selector.innerHTML = selector.innerHTML + `<option>${value}</option>`
                 }
                 
-                customDiv.innerHTML = customDiv.innerHTML + `<div class='flex-column'><select data-value="${vet}" data-paginator="${dateValue}" id="customSelect">${selector.innerHTML}</select><button id="customSubmit">Submit</button></div>`
+                customDiv.innerHTML = customDiv.innerHTML + `<div class='flex-end'><select data-value="${vet}" data-paginator="${dateValue}" id="customSelect">${selector.innerHTML}</select><button id="customSubmit">Submit</button></div>`
                 document.getElementById("customSubmit").addEventListener('click', () => {customConfirmationDiv()})
             
             }
@@ -980,12 +980,20 @@ function addToOwner(user, pet){
 }
 
 function addNewPet(data){
+   
     if(!document.getElementById("managePets").classList.contains("notVisible")){
         document.getElementById("managePets").classList.toggle("notVisible");
     }
     if(!document.getElementById("managementDiv").classList.contains("notVisible")){
         document.getElementById("managementDiv").classList.toggle("notVisible");
     }
+
+    above = document.getElementById("above")
+    above.innerHTML = ""
+
+    document.getElementById("petName").value = ""
+    document.getElementById("petSpecies").value = ""
+    document.getElementById("petBreed").value = ""
     
     if(data === undefined){
         
@@ -1016,12 +1024,17 @@ function addNewPet(data){
     const handlePet = (event) => { 
         submitPet(data);
         submitButton.removeEventListener('click', handlePet)
+        closeNewPetModal();
     }
      
      submitButton.addEventListener('click', handlePet);
     
      //Making sure the div can close
      const closeButton = document.getElementById("close")
+
+     if(closeButton.hasEventListener == false){
+        console.log("has event listener")
+    }
 
      identity = event.target.id
      
@@ -1032,6 +1045,7 @@ function addNewPet(data){
         document.getElementById("addPet").classList.toggle("notVisible");
         submitButton.removeEventListener('click', handlePet)
         closeButton.removeEventListener('click', closeNewPetModal)
+        closeButton.hasEventListener = false;
         
         reload = document.getElementById("createNew");
         
@@ -1040,6 +1054,7 @@ function addNewPet(data){
 
 
     closeButton.addEventListener('click', closeNewPetModal);
+    closeButton.hasEventListener = true;
     
 }
 
@@ -1171,6 +1186,8 @@ async function submitPet(){
     petName = document.getElementById("petName").value
     petSpecies = document.getElementById("petSpecies").value
     petBreed = document.getElementById("petBreed").value
+    above = document.getElementById("above")
+
     
 
     if(document.getElementById("ownerP")){
@@ -1199,10 +1216,12 @@ async function submitPet(){
         
     if (document.getElementById("ownerP")){
         manageCustomerSearch()
+        document.getElementById("managementDiv").classList.toggle("notVisible")
+        above.innerHTML = "";
     }
-        let bg = document.getElementById("bg");
-        bg.classList.toggle("bg");
-        document.getElementById("addPet").classList.toggle("notVisible");
+        // let bg = document.getElementById("bg");
+        // bg.classList.toggle("bg");
+        // document.getElementById("addPet").classList.toggle("notVisible");
     }
     catch (error) {
         console.log(error)

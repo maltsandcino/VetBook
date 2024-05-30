@@ -96,6 +96,15 @@ button:hover {
 
 .flex-column select {
     min-width: 145px;
+    /* max-width: 45%; */
+}
+
+.item select {
+    min-width: 153px;
+}
+
+.item input {
+    min-width: 153px;
 }
 
 .flex-center-wrap {

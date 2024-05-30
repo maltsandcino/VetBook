@@ -94,6 +94,10 @@ button:hover {
     width: 50%;
 }
 
+.flex-column select {
+    min-width: 145px;
+}
+
 .flex-center-wrap {
     display: flex;
     flex-direction: row;
@@ -188,10 +192,6 @@ label {
     justify-content: space-around;
     flex-wrap: wrap;
     gap: 20px;
-}
-
-.test {
-    
 }
 
 #categories {
